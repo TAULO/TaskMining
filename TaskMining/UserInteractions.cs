@@ -11,6 +11,8 @@ namespace TaskMining
         // window
         WINDOW_FOCUS,
         WINDOW_UNFOCUS,
+        WINDOW_OPEN,
+        WINDOW_CLOSE,
             
         // mouse
         MOUSE_LEFT_CLICK,
@@ -20,8 +22,9 @@ namespace TaskMining
         // KEYBOARD
         KEYBOARD_CLICK,
         KEYBOARD_HOLD,
+        KEYBOARD_SEND_KEYS,
 
         // OTHER
-        OTHER
+        COMPUTER
     }
 }

@@ -124,7 +124,7 @@ namespace TaskMining
             var arr = IndividualTasks
                 .GroupBy(task => task.Data.UserInteractions)
                 .Select(x => new { Element = x.Key, Counter = x.Count() })
-                .Where(task => task.Element.ToString().Equals("WINDOW_OPEN"))
+                .Where(task => task.Element.Equals(UserInteractions.WINDOW_OPEN))
                 .FirstOrDefault();
 
             return arr != null ? arr.Counter : throw new Exception("an exception msg"); // make exception; 

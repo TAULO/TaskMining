@@ -17,11 +17,23 @@ namespace TaskMining
 
 
             var task1 = new CompleteTask("CompleteTaskOne", path1);
-            var task2 = new CompleteTask("CompleteTaskOne", path2);
-            var task3 = new CompleteTask("CompleteTaskOne", path3);
-            var task4 = new CompleteTask("CompleteTaskOne", path4);
+            var task2 = new CompleteTask("CompleteTaskTwo", path2);
+            var task3 = new CompleteTask("CompleteTaskThree", path3);
+            var task4 = new CompleteTask("CompleteTaskFour", path4);
 
-            Console.WriteLine(task1.IndividualUserInteractionsFrequency("WINDOW_OPEN"));
+            List<CompleteTask> tasks = new List<CompleteTask>() { task1, task2, task3, task4 };
+
+            foreach (var completeTask in tasks)
+            {
+                Console.WriteLine(completeTask.CompleteTaskName);
+                Console.WriteLine();
+                foreach (var individualTasks in completeTask.IndividualTasks)
+                {
+                    Console.WriteLine(individualTasks.Data.Data + "........................" + individualTasks.Data.UserInteractions);
+                }
+                Console.WriteLine("------------------------------------------------------------------------------------------------------------------------");
+                Console.WriteLine();
+            }
         }
     }
 }

@@ -10,17 +10,18 @@ namespace TaskMining
     {
         public static void Main(string[] args)
         {
-            string path = "C:/Users/Taulo/Desktop/TaskMiningTestData/CalcWorkFlow/CalcWorkFlow1.txt";
-            var taskOneData = new HandleCSVData(path);
+            string path1 = "C:/Users/Taulo/Desktop/TaskMiningTestData/CalcWorkFlow/CalcWorkFlow1.txt";
+            string path2 = "C:/Users/Taulo/Desktop/TaskMiningTestData/CalcWorkFlow/CalcWorkFlow2.txt";
+            string path3 = "C:/Users/Taulo/Desktop/TaskMiningTestData/CalcWorkFlow/CalcWorkFlow3.txt";
+            string path4 = "C:/Users/Taulo/Desktop/TaskMiningTestData/CalcWorkFlow/CalcWorkFlow3.txt";
 
 
-            taskOneData.Tasks.ForEach(task =>
-            {
-                //Console.WriteLine(task.TotalTaskCompletionTimeInSeconds(taskOneData.Tasks[0], taskOneData.Tasks[taskOneData.Tasks.Count - 1]));
-                var time = task.TotalTaskCompletionTime(taskOneData.Tasks[0], taskOneData.Tasks[taskOneData.Tasks.Count - 1]);
-                Console.WriteLine("Total time: " + time.Minute + ":" + time.Second);
-                //Console.WriteLine(task.GetDateTime());
-            });       
+            var task1 = new CompleteTask("CompleteTaskOne", path1);
+            var task2 = new CompleteTask("CompleteTaskOne", path2);
+            var task3 = new CompleteTask("CompleteTaskOne", path3);
+            var task4 = new CompleteTask("CompleteTaskOne", path4);
+
+            Console.WriteLine(task1.IndividualUserInteractionsFrequency("WINDOW_OPEN"));
         }
     }
 }

@@ -13,6 +13,8 @@ namespace TaskMining
         public string CompleteTaskName { get; set; }
         public int TotalIndividualTasks { get; }
         public int TotalCompleteTaskApplicationsUsed { get; }
+        public List<string> IndividualTaskDataList { get; }
+        public List<UserInteractions> IndividualTaskUserInteractionsList { get; }
         public DateTime TotalTasksCompletionTime { get; }
         public double TotalTasksCompletionTimeInSeconds { get; }
 
@@ -24,6 +26,8 @@ namespace TaskMining
             CompleteTaskName = individualTaskName;
             TotalIndividualTasks = IndividualTasks.Count;
             TotalCompleteTaskApplicationsUsed = CalcTotalCompleteTaskApplicationsUsed();
+            IndividualTaskDataList = GetIndividualTaskData();
+            IndividualTaskUserInteractionsList = GetIndividualTaskUserInteractions();
             TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(IndividualTasks[0], IndividualTasks[^1]);
             TotalTasksCompletionTime = TotalTaskCompletionTime(IndividualTasks[0], IndividualTasks[^1]);
         }
@@ -42,6 +46,13 @@ namespace TaskMining
             return double.Parse(wtEnd.TimeStamp) - double.Parse(wtStart.TimeStamp);
         }
 
+        private double TotalTaskCompletionTimeInSeconds(double wtStart, double wtEnd)
+        {
+            if (IndividualTasks.Count <= 1) throw new Exception("Not enough tasks exception"); // make exception to throw
+
+            return wtEnd - wtStart;
+        }
+
         // does not work fix fix fix
         private DateTime TotalTaskCompletionTime(IndividualTask wtStart, IndividualTask wtEnd)
         {
@@ -56,35 +67,41 @@ namespace TaskMining
 
         public void HandleCSV(string path)
         {
-            var csvParser = new TextFieldParser(path);
-
-            csvParser.SetDelimiters(new string[] { "," });
-            csvParser.HasFieldsEnclosedInQuotes = true;
-
-            // skip header line
-            csvParser.ReadLine();
-
-            while (!csvParser.EndOfData)
+            try
             {
-                string[]? fields = csvParser.ReadFields();
+                var csvParser = new TextFieldParser(path);
 
-                if (fields == null)
+                csvParser.SetDelimiters(new string[] { "," });
+                csvParser.HasFieldsEnclosedInQuotes = true;
+
+                // skip header line
+                csvParser.ReadLine();
+
+                while (!csvParser.EndOfData)
                 {
-                    throw new ArgumentNullException(nameof(fields));
-                }
-                else
-                {
-                    string timeStamp = fields[0];
-                    string machineName = fields[1];
-                    string userName = fields[2];
-                    string applicationName = fields[3];
+                    string[]? fields = csvParser.ReadFields();
 
-                    IndividualTaskData data = new IndividualTaskData(fields[4], IndividualTaskData.GetUserInteractions(fields[5]));
+                    if (fields == null)
+                    {
+                        throw new ArgumentNullException(nameof(fields));
+                    }
+                    else
+                    {
+                        string timeStamp = fields[0];
+                        string machineName = fields[1];
+                        string userName = fields[2];
+                        string applicationName = fields[3];
 
-                    IndividualTasks.Add(new IndividualTask(timeStamp, machineName, userName, applicationName, data));
+                        IndividualTaskData data = new IndividualTaskData(fields[4], IndividualTaskData.GetUserInteractions(fields[5]));
+
+                        IndividualTasks.Add(new IndividualTask(timeStamp, machineName, userName, applicationName, data));
+                    }
                 }
+                csvParser.Close();
+            } catch (FileNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
-            csvParser.Close();
         }
 
         /// <summary>
@@ -96,7 +113,7 @@ namespace TaskMining
         {
             var arr = IndividualTasks
                .GroupBy(task => task.Data.Data)
-               .Select(y => new { Element = y.Key, Counter = y.Count() })
+               .Select(x => new { Element = x.Key, Counter = x.Count() })
                .Where(task => task.Element.ToLower().Equals(taskData.ToLower()))
                .FirstOrDefault();
             
@@ -112,11 +129,47 @@ namespace TaskMining
         {
             var arr = IndividualTasks
                 .GroupBy(task => task.Data.UserInteractions)
-                .Select(y => new { Element = y.Key, Counter = y.Count() })
+                .Select(x => new { Element = x.Key, Counter = x.Count() })
                 .Where(task => task.Element.ToString().Equals(userInteraction))
                 .FirstOrDefault();
 
             return arr != null ? arr.Counter : throw new Exception("an exception msg"); // make exception
+        }
+
+        private List<string> GetIndividualTaskData()
+        {
+            return IndividualTasks
+                .Select(task => task.Data.Data)
+                .ToList();
+        }
+
+        private List<UserInteractions> GetIndividualTaskUserInteractions()
+        {
+            return IndividualTasks
+                .Select(task => task.Data.UserInteractions)
+                .ToList();
+        }
+
+        public Dictionary<string, double> TimeSpentPrApplication()
+        {
+            var dic = new Dictionary<string, double>();
+            var list = new List<string>();
+
+            var taskStart = IndividualTasks
+                .GroupBy(task => new { task.TimeStamp, task.ApplicationName, task.Data.UserInteractions })
+                .Select(ts => ts.Key)
+                .Where(ui => ui.UserInteractions.Equals(UserInteractions.WINDOW_FOCUS))
+                .Select(task => new { task.ApplicationName, task.TimeStamp })
+                .ToDictionary(dic => new { dic.ApplicationName, dic.TimeStamp });
+
+            var taskEnd = IndividualTasks
+                .GroupBy(task => new { task.TimeStamp, task.ApplicationName, task.Data.UserInteractions })
+                .Select(ts => ts.Key)
+                .Where(ui => ui.UserInteractions.Equals(UserInteractions.WINDOW_UNFOCUS))
+                .Select(task => new { task.ApplicationName, task.TimeStamp })
+                .ToDictionary(dic => new { dic.ApplicationName, dic.TimeStamp});
+
+            return dic;
         }
 
         private int CalcTotalCompleteTaskApplicationsUsed()

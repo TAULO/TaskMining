@@ -25,6 +25,6 @@ namespace TaskMining
         KEYBOARD_SEND_KEYS,
 
         // OTHER
-        COMPUTER
+        MANATEE
     }
 }

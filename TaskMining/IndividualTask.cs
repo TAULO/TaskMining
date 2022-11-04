@@ -9,11 +9,11 @@ namespace TaskMining
     internal class IndividualTask
     {
         // unix ts
-        public string TimeStamp { get; set; }   
-        public string MachineName { get; set; } 
-        public string UserName { get; set; }    
-        public string ApplicationName { get; set; }
-        public IndividualTaskData Data { get; set; }
+        public string TimeStamp { get; }   
+        public string MachineName { get; } 
+        public string UserName { get; }    
+        public string ApplicationName { get; }
+        public IndividualTaskData Data { get; }
         public IndividualTask(string timeStamp, string machineName, string userName, string applicationName, IndividualTaskData data)
         {
             TimeStamp = timeStamp;

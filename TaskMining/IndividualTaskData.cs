@@ -8,8 +8,8 @@ namespace TaskMining
 {
     internal class IndividualTaskData
     {
-        public string Data { get; set; }
-        public UserInteractions UserInteractions { get; set; }
+        public string Data { get; }
+        public UserInteractions UserInteractions { get; }
         public IndividualTaskData(string data, UserInteractions userInteractions) 
         { 
             Data = data;  
@@ -39,7 +39,7 @@ namespace TaskMining
                 case "KEYBOARD_SEND_KEYS":
                     return UserInteractions.KEYBOARD_SEND_KEYS;
                 default:
-                    return UserInteractions.COMPUTER;
+                    return UserInteractions.MANATEE;
             }
         }
         public string ToString(string appName) { return Data.Replace("{applicationName}", appName) + "\n\t|" + "\n\t|" + "\n\tv"; }

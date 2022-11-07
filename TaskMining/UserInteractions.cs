@@ -25,6 +25,6 @@ namespace TaskMining
         KEYBOARD_SEND_KEYS,
 
         // OTHER
-        MANATEE
+        MANATEE // not a user interactions, but a manatee log
     }
 }

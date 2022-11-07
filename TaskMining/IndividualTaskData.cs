@@ -42,6 +42,11 @@ namespace TaskMining
                     return UserInteractions.MANATEE;
             }
         }
+
+        public bool IsEqual(IndividualTaskData data)
+        {
+            return Data.Equals(data.Data) && UserInteractions.Equals(data.UserInteractions);
+        }
         public string ToString(string appName) { return Data.Replace("{applicationName}", appName) + "\n\t|" + "\n\t|" + "\n\tv"; }
     }   
 }

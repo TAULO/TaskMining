@@ -14,21 +14,23 @@ namespace TaskMining
             string path2 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow2.txt";
             string path3 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow3.txt";
             string path4 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow4.txt";
-            string pathCopi = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi.txt";
+            
+            string pathCopy = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi.txt";
+            string pathCopy1 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi1.txt";
 
             var task1 = new CompleteTask("CompleteTaskOne", path1);
             var task2 = new CompleteTask("CompleteTaskTwo", path2);
             var task3 = new CompleteTask("CompleteTaskThree", path3);
             var task4 = new CompleteTask("CompleteTaskFour", path4);
-            var taskKopi = new CompleteTask("CompleteTaskKopi", pathCopi);
 
-            var tasks = AnalyseCompleteTask.CompleteTasks = new List<CompleteTask>() { task1, task2, task3, task4, taskKopi };
+            var taskKopi = new CompleteTask("CompleteTaskKopi", pathCopy);
+            var taskKopi1 = new CompleteTask("CompleteTaskKopi1", pathCopy1);
 
-            //Console.WriteLine(task1.TimeSpentPrApplication()[1]);
+            var tasks = AnalyseCompleteTask.CompleteTasks = new List<CompleteTask>() { task1, task2, task3, task4, taskKopi, taskKopi1 };
 
-            foreach(var task in task1.TimeSpentPrApplication())
+            foreach (var item in task2.TimeSpentPrApplication)
             {
-                Console.WriteLine(task);
+                //Console.WriteLine(item);
             }
 
             //foreach (var completeTask in tasks)
@@ -44,6 +46,20 @@ namespace TaskMining
             //}
 
             AnalyseCompleteTask.RepeatableCompleteTasks();
+            //Console.WriteLine(AnalyseCompleteTask.IndividualTaskTotalFrequency("10"));
+            //Console.WriteLine(AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency(UserInteractions.MOUSE_LEFT_CLICK));
+
+            //foreach (var item in AnalyseCompleteTask.IndividualTaskTotalFrequency())
+            //{
+            //    Console.WriteLine(item);
+            //}
+
+            //foreach (var item in AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency())
+            //{
+            //    Console.WriteLine(item);
+            //}
+
+            AnalyseCompleteTask.TestTest();
         }
     }
 }

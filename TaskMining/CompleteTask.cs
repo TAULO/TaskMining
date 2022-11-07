@@ -13,6 +13,7 @@ namespace TaskMining
         public string CompleteTaskName { get; set; }
         public int TotalIndividualTasks { get; }
         public int TotalCompleteTaskApplicationsUsed { get; }
+        public Dictionary<string, double> TimeSpentPrApplication { get; }
         public List<string> IndividualTaskDataList { get; }
         public List<UserInteractions> IndividualTaskUserInteractionsList { get; }
         public DateTime TotalTasksCompletionTime { get; }
@@ -26,6 +27,7 @@ namespace TaskMining
             CompleteTaskName = individualTaskName;
             TotalIndividualTasks = IndividualTasks.Count;
             TotalCompleteTaskApplicationsUsed = CalcTotalCompleteTaskApplicationsUsed();
+            TimeSpentPrApplication = CalcTimeSpentPrApplication();
             IndividualTaskDataList = GetIndividualTaskData();
             IndividualTaskUserInteractionsList = GetIndividualTaskUserInteractions();
             TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(IndividualTasks[0], IndividualTasks[^1]);
@@ -105,35 +107,38 @@ namespace TaskMining
         }
 
         /// <summary>
-        /// Returns the total amount the same task has occurred.     
+        /// Gets the total amount a action has occurred in a complete task.     
         /// </summary>
         /// <param name="taskData">Task data to search for</param>
         /// <returns></returns>
         public int IndividualTaskFrequency(string taskData)
         {
-            var arr = IndividualTasks
+            var tasks = IndividualTasks
                .GroupBy(task => task.Data.Data)
                .Select(x => new { Element = x.Key, Counter = x.Count() })
                .Where(task => task.Element.ToLower().Equals(taskData.ToLower()))
                .FirstOrDefault();
             
-            return arr != null ? arr.Counter : throw new Exception("an exception msg"); // make exception;
+            return tasks != null ? tasks.Counter : throw new Exception("an exception msg"); // make exception;
         }
 
         /// <summary>
-        /// Returns the total amount a user interaction has occurred.
+        /// Gets the total amount a user interaction has occurred in a complete task.
         /// </summary>
         /// <param name="userInteraction"></param>
         /// <returns></returns>
-        public int IndividualUserInteractionsFrequency(string userInteraction)
+        public int IndividualUserInteractionsFrequency(object userInteraction)
         {
-            var arr = IndividualTasks
+            if (userInteraction.GetType() != typeof(string) && userInteraction.GetType() != typeof(UserInteractions))
+                throw new Exception("wrong type exception msg"); // make exception
+
+            var tasks = IndividualTasks
                 .GroupBy(task => task.Data.UserInteractions)
                 .Select(x => new { Element = x.Key, Counter = x.Count() })
-                .Where(task => task.Element.ToString().Equals(userInteraction))
+                .Where(task => task.Element.ToString().Equals(userInteraction) || task.Element.Equals(userInteraction))
                 .FirstOrDefault();
 
-            return arr != null ? arr.Counter : throw new Exception("an exception msg"); // make exception
+            return tasks != null ? tasks.Counter : throw new Exception("an exception msg"); // make exception
         }
 
         private List<string> GetIndividualTaskData()
@@ -150,37 +155,54 @@ namespace TaskMining
                 .ToList();
         }
 
-        public Dictionary<string, double> TimeSpentPrApplication()
+        private Dictionary<string, double> CalcTimeSpentPrApplication()
         {
             var dic = new Dictionary<string, double>();
-            var list = new List<string>();
 
             var taskStart = IndividualTasks
                 .GroupBy(task => new { task.TimeStamp, task.ApplicationName, task.Data.UserInteractions })
                 .Select(ts => ts.Key)
                 .Where(ui => ui.UserInteractions.Equals(UserInteractions.WINDOW_FOCUS))
-                .Select(task => new { task.ApplicationName, task.TimeStamp })
-                .ToDictionary(dic => new { dic.ApplicationName, dic.TimeStamp });
+                .Select(task => new { task.ApplicationName, tsStart = task.TimeStamp })
+                .ToList();
 
             var taskEnd = IndividualTasks
                 .GroupBy(task => new { task.TimeStamp, task.ApplicationName, task.Data.UserInteractions })
                 .Select(ts => ts.Key)
                 .Where(ui => ui.UserInteractions.Equals(UserInteractions.WINDOW_UNFOCUS))
-                .Select(task => new { task.ApplicationName, task.TimeStamp })
-                .ToDictionary(dic => new { dic.ApplicationName, dic.TimeStamp});
+                .Select(task => new { task.ApplicationName, tsEnd = task.TimeStamp })
+                .ToList();
 
+            for(int i = 0; i < taskStart.Count; i++)
+            {
+                double tsStart = double.Parse(taskStart[i].tsStart);
+                double tsEnd = double.Parse(taskEnd[i].tsEnd);
+                double res = tsEnd - tsStart;
+
+                if (!dic.ContainsKey(taskStart[i].ApplicationName))
+                {
+                    dic.Add(taskStart[i].ApplicationName, res);
+                } else
+                {
+                    dic[taskStart[i].ApplicationName] += res;
+                }
+            }
             return dic;
         }
 
         private int CalcTotalCompleteTaskApplicationsUsed()
         {
-            var arr = IndividualTasks
+            var tasks = IndividualTasks
                 .GroupBy(task => task.Data.UserInteractions)
                 .Select(x => new { Element = x.Key, Counter = x.Count() })
                 .Where(task => task.Element.Equals(UserInteractions.WINDOW_OPEN))
                 .FirstOrDefault();
 
-            return arr != null ? arr.Counter : throw new Exception("an exception msg"); // make exception; 
+            return tasks != null ? tasks.Counter : throw new Exception("an exception msg"); // make exception; 
+        }
+        public bool ArrayIsEqual(List<IndividualTask> secondList)
+        {
+            return IndividualTasks.Count != secondList.Count ? false : IndividualTasks.SequenceEqual(secondList);
         }
     }
 }

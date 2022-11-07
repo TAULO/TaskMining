@@ -27,12 +27,12 @@ namespace TaskMining
             DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             return dateTime.AddSeconds(double.Parse(TimeStamp) / 1000);
         }
-            
+
         override
         public string ToString()
         {
-            return $"Timestamp          Machine name          User name          Application name          Data User                                        User Interactions\n" +
-                   $"{TimeStamp}      {MachineName}       {UserName}              {ApplicationName}                {Data.Data.Replace("{applicationName}", ApplicationName)}                                           {Data.UserInteractions}\n";
+            return $"Timestamp\t\tMachine name\t\tUser name\t\tApplication name\t\tData User\t\tUser Interactions\n" +
+                   $"{TimeStamp}\t\t{MachineName}\t\t{UserName}\t\t{ApplicationName}\t\t{Data.Data.Replace("{applicationName}", ApplicationName)}                                           {Data.UserInteractions}\n";
         }
     }
 }

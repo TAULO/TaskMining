@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace TaskMining
 {
-    internal class CompleteTask : IHandleCSVData
+    public class CompleteTask : IHandleCSVData
     {
         public string CompleteTaskID { get; }
         public string CompleteTaskName { get; set; }
         public int TotalIndividualTasks { get; }
         public int TotalCompleteTaskApplicationsUsed { get; }
         public Dictionary<string, double> TimeSpentPrApplication { get; }
+        public int TotalAmountOfUserInteractionActions { get; }
         public List<string> IndividualTaskDataList { get; }
         public List<UserInteractions> IndividualTaskUserInteractionsList { get; }
         public DateTime TotalTasksCompletionTime { get; }
@@ -28,6 +29,7 @@ namespace TaskMining
             TotalIndividualTasks = IndividualTasks.Count;
             TotalCompleteTaskApplicationsUsed = CalcTotalCompleteTaskApplicationsUsed();
             TimeSpentPrApplication = CalcTimeSpentPrApplication();
+            TotalAmountOfUserInteractionActions = CalcTotalAmountOfUserInteractionActions();
             IndividualTaskDataList = GetIndividualTaskData();
             IndividualTaskUserInteractionsList = GetIndividualTaskUserInteractions();
             TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(IndividualTasks[0], IndividualTasks[^1]);
@@ -199,6 +201,21 @@ namespace TaskMining
                 .FirstOrDefault();
 
             return tasks != null ? tasks.Counter : throw new Exception("an exception msg"); // make exception; 
+        }
+        private int CalcTotalAmountOfUserInteractionActions()
+        {
+            int result = 0;
+            var task = IndividualTasks
+                .GroupBy(task => new { task.Data.UserInteractions })
+                .Select(ui => new { Element = ui, Counter = ui.Count() })
+                .Where(ui => !ui.Element.Key.UserInteractions.Equals(UserInteractions.MANATEE))
+                .ToList();
+            
+            foreach (var t in task)
+            {
+                result += t.Counter;
+            }
+            return result;
         }
         public bool ArrayIsEqual(List<IndividualTask> secondList)
         {

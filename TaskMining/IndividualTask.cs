@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TaskMining
 {
-    internal class IndividualTask
+    public class IndividualTask
     {
         // unix ts
         public string TimeStamp { get; }   

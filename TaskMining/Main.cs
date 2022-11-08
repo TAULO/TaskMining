@@ -59,7 +59,27 @@ namespace TaskMining
             //    Console.WriteLine(item);
             //}
 
-            AnalyseCompleteTask.TestTest();
+            //foreach (var item in AnalyseCompleteTask.TestTest())
+            //{
+            //    //Console.WriteLine(item.Key + ": "); 
+            //    foreach (var i in item.Value)
+            //    {
+            //        //Console.WriteLine(i);
+            //    }
+            //    Console.WriteLine();
+            //}
+
+            //Console.WriteLine(AnalyseCompleteTask.CompleteTaskAverageCompletionTime());
+            //foreach (var task in AnalyseCompleteTask.CompletionTimePrCompleteTask())
+            //{
+            //    Console.WriteLine(task);
+            //}
+
+            //foreach(var task in AnalyseCompleteTask.CompleteTasks)
+            //{
+            //    Console.WriteLine(task.TotalAmountOfUserInteractionActions);
+            //}
+            //Console.WriteLine();
         }
     }
 }

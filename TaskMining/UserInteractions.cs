@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TaskMining
 {
-    internal enum UserInteractions
+    public enum UserInteractions
     {
         // window
         WINDOW_FOCUS,

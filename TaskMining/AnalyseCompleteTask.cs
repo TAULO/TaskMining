@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace TaskMining
 {
-    internal class AnalyseCompleteTask
+    public class AnalyseCompleteTask
     {
         // repeatable complete task
         //
+
         public static List<CompleteTask> CompleteTasks = new List<CompleteTask>();
+        public static int TotalCompleteTasks { get => CompleteTasks.Count; }
 
         public static List<CompleteTask> RepeatableCompleteTasks()
         {
@@ -71,7 +73,7 @@ namespace TaskMining
         public static int IndividualUserInteractionsTotalFrequency(object userInteraction)
         {
             if (userInteraction.GetType() != typeof(string) && userInteraction.GetType() != typeof(UserInteractions))
-                throw new NotSupportedException("wrong type exception msg"); // make exception
+                throw new NotSupportedException("wrong type exception msg"); 
 
             int total = 0;
             foreach (var task in CompleteTasks)
@@ -81,7 +83,7 @@ namespace TaskMining
                     .Select(ui => new { Element = ui.Key, Counter = ui.Count() })
                     .Where(task => task.Element.ToString().Equals(userInteraction) || task.Element.Equals(userInteraction))
                     .FirstOrDefault();
-                total += taskCount != null ? taskCount.Counter : 0; // make exception
+                total += taskCount != null ? taskCount.Counter : 0; 
             }
             return total;
         }
@@ -138,28 +140,59 @@ namespace TaskMining
             return result;
         }
 
-        // dic in dic??
+        public static Dictionary<string, double> CompletionTimePrCompleteTask()
+        {
+            var dic = new Dictionary<string, double>();
+
+            foreach(var task in CompleteTasks)
+            {
+                dic.Add(task.CompleteTaskName, task.TotalTasksCompletionTimeInSeconds);
+            }
+            return dic; 
+        }
+
+        public static double CompleteTaskAverageCompletionTime()
+        {
+            double result = 0;
+            foreach (var task in CompleteTasks)
+            {
+                result += task.TotalTasksCompletionTimeInSeconds;
+            }
+            return result / CompleteTasks.Count;
+        }
+
+        // does not work, fix later   
         public static Dictionary<string, Dictionary<string, int>> TestTest()
         {
             var outDic = new Dictionary<string, Dictionary<string, int>>();
+            var innerDic = new Dictionary<string, int>();
 
             foreach (var task in CompleteTasks)
             {
-                Console.WriteLine(task.CompleteTaskName + ":");
                 for (int i = 0; i < task.IndividualTasks.Count; i++)
                 {
-                    var innerDic = task.IndividualTasks
+                    var innerDicData = task.IndividualTasks
                         .GroupBy(task => new { Data = task.Data.Data, UI = task.Data.UserInteractions.ToString() })
-                        .Where(t => t.Key.Data.Equals(task.IndividualTasks[i].Data.Data) && t.Key.UI.Equals(task.IndividualTasks[i].Data.UserInteractions.ToString()))
+                        //.Where(t => t.Key.Data.Equals(task.IndividualTasks[i].Data.Data) && t.Key.UI.Equals(task.IndividualTasks[i].Data.UserInteractions.ToString()))
                         .Select(data => new { Element = data.Key, Counter = data.Count() })
                         .ToDictionary(dic => new { dic.Element, dic.Counter });
 
-                    foreach (var dic in innerDic)
+                    if (!outDic.ContainsKey(task.CompleteTaskName))
                     {
-                        outDic.Add(task.CompleteTaskName, new Dictionary<string, int>(dic.Key.Element.Data, dic.Value.Counter));
+                        foreach (var innerData in innerDicData)
+                        {
+                            if (!innerDic.ContainsKey(innerData.Key.Element.Data))
+                            {
+                                Console.WriteLine(task.CompleteTaskName + ": " + innerData.Key.Element.Data + "....." + innerData.Value.Counter);  
+                                innerDic.Add(innerData.Key.Element.Data, innerData.Value.Counter);
+                            } else
+                            {
+                                innerDic[innerData.Key.Element.Data] += innerData.Value.Counter;
+                            }
+                        }
                     }
                 }
-                Console.WriteLine();
+                outDic.Add(task.CompleteTaskName, innerDic);
             }
             return outDic;
         }

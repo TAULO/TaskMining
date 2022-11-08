@@ -33,10 +33,11 @@ namespace TaskMining
             IndividualTaskDataList = GetIndividualTaskData();
             IndividualTaskUserInteractionsList = GetIndividualTaskUserInteractions();
             TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(IndividualTasks[0], IndividualTasks[^1]);
+            TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(double.Parse(IndividualTasks[0].TimeStamp), double.Parse(IndividualTasks[^1].TimeStamp));
             TotalTasksCompletionTime = TotalTaskCompletionTime(IndividualTasks[0], IndividualTasks[^1]);
         }
 
-        public static DateTime GetDateTime(double ts)
+        private DateTime GetDateTimeHelper(double ts)
         {
             DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             return dateTime.AddSeconds(ts / 1000);
@@ -65,7 +66,7 @@ namespace TaskMining
             double subtractTs = TotalTaskCompletionTimeInSeconds(wtStart, wtEnd);
             long uxNow = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
 
-            DateTime time = GetDateTime(uxNow - subtractTs);
+            DateTime time = GetDateTimeHelper(uxNow - subtractTs);
             return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second);
         }
 

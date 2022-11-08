@@ -26,12 +26,14 @@ namespace TaskMining
                     return UserInteractions.WINDOW_UNFOCUS;
                 case "WINDOW_OPEN":
                     return UserInteractions.WINDOW_OPEN;
-                case "WINDOW_CLOSED":
+                case "WINDOW_CLOSE":
                     return UserInteractions.WINDOW_CLOSE;
                 case "MOUSE_LEFT_CLICK":
                     return UserInteractions.MOUSE_LEFT_CLICK;
                 case "MOUSE_RIGHT_CLICK":
                     return UserInteractions.MOUSE_RIGHT_CLICK;
+                case "MOUSE_HOLD":
+                    return UserInteractions.MOUSE_HOLD;
                 case "KEYBOARD_CLICK":
                     return UserInteractions.KEYBOARD_CLICK;
                 case "KEYBOARD_HOLD":

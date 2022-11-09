@@ -15,7 +15,7 @@ namespace TaskMiningTest
         public void TotalTaskCompletionTimeInSecondsTest()
         {
             CompleteTask task = GetData();
-            Assert.AreEqual(task.TotalTasksCompletionTimeInSeconds, 18);
+            Assert.AreEqual(task.TotalTasksCompletionTimeInSeconds, 57);
         }
 
         [TestMethod]
@@ -23,21 +23,38 @@ namespace TaskMiningTest
         {
             CompleteTask task = GetData();
 
-            int app = task.IndividualTaskFrequency("Calculator");
+            int calc = task.IndividualTaskFrequency("Calculator");
+            int docker = task.IndividualTaskFrequency("Docker");
+            int excel = task.IndividualTaskFrequency("Excel");
             int five = task.IndividualTaskFrequency("5");
             int plus = task.IndividualTaskFrequency("+");
             int ten = task.IndividualTaskFrequency("10");
             int divide = task.IndividualTaskFrequency("/");
             int two = task.IndividualTaskFrequency("2");
             int equal = task.IndividualTaskFrequency("=");
+            int helloWorld = task.IndividualTaskFrequency("Hello World");
+            int start = task.IndividualTaskFrequency("start");
 
-            Assert.AreEqual(4, app);
-            Assert.AreEqual(1, five);
-            Assert.AreEqual(1, plus);
-            Assert.AreEqual(2, ten);
-            Assert.AreEqual(2, divide);
-            Assert.AreEqual(1, two);
-            Assert.AreEqual(1, equal);
+            Assert.AreEqual(6, calc, "calculator");
+            Assert.AreEqual(3, docker, "docker");
+            Assert.AreEqual(7, excel, "excel");
+            Assert.AreEqual(1, five, "5");
+            Assert.AreEqual(1, plus, "+");
+            Assert.AreEqual(2, ten, "10");
+            Assert.AreEqual(1, divide, "/");
+            Assert.AreEqual(1, two, "2");
+            Assert.AreEqual(1, equal, "=");
+            Assert.AreEqual(1, helloWorld, "hello world");
+            Assert.AreEqual(1, start, "start");
+
+            // test case sensitive
+            int calcCase = task.IndividualTaskFrequency("CalCulaToR");
+            int dockerCase = task.IndividualTaskFrequency("docker");
+            int excelCase = task.IndividualTaskFrequency("EXCEL");
+
+            Assert.AreEqual(6, calcCase, "calculator case sensitive");
+            Assert.AreEqual(3, dockerCase, "docker case sensitive");
+            Assert.AreEqual(7, excelCase, "excel case sensitive");
         }
 
         [TestMethod]
@@ -54,11 +71,11 @@ namespace TaskMiningTest
             int winClosed = task.IndividualUserInteractionsFrequency("WINDOW_CLOSE");
 
             Assert.AreEqual(5, manatee);
-            Assert.AreEqual(1, winOpen);
-            Assert.AreEqual(1, winFocus);
-            Assert.AreEqual(6, keyClick);
-            Assert.AreEqual(2 ,keySend);
-            Assert.AreEqual(1, winUnfocus);
+            Assert.AreEqual(3, winOpen);
+            Assert.AreEqual(6, winFocus);
+            Assert.AreEqual(2, keyClick);
+            Assert.AreEqual(1 ,keySend);
+            Assert.AreEqual(6, winUnfocus);
             Assert.AreEqual(1, winClosed);
         }
 
@@ -66,7 +83,31 @@ namespace TaskMiningTest
         public void TestTimespentPrApplication()
         {
             CompleteTask task = GetData();
-            Dictionary<string, double> data = task.TimeSpentPrApplication;
+            Dictionary<string, double> dic = task.TimeSpentPrApplication;
+
+            double calc = dic["Calculator"];
+            double excel = dic["Excel"];
+            double docker = dic["Docker"];
+
+            Assert.AreEqual(11, calc, "calculator");
+            Assert.AreEqual(18, excel, "excel");
+            Assert.AreEqual(10, docker, "docker");
+        }
+
+        [TestMethod] 
+        public void TestTotalCompleteTaskApplicationsUsed()
+        {
+            CompleteTask task = GetData();
+            int totalApps = task.TotalCompleteTaskApplicationsUsed;
+            
+            Assert.AreEqual(3, totalApps, "total apps");
+        }
+        public void TestTotalAmountOfUserInteractionActions()
+        {
+            CompleteTask task = GetData();
+            int totalUserInteractions = task.TotalAmountOfUserInteractionActions;
+
+            Assert.AreEqual(27, totalUserInteractions, "total user interactions");
         }
     }
 }

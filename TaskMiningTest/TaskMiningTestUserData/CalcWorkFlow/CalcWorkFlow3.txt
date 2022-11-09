@@ -1,0 +1,23 @@
+@timestamp: Descending,"MachineName.keyword: Descending","UserName.keyword: Descending","applicationName.keyword: Descending","@mt.keyword: Descending",Count
+1667304245123,"DESKTOP-GAL2QRE",Taulo,Calculator,"HandleActivation for {applicationName} completed",1
+1667304245124,"DESKTOP-GAL2QRE",Taulo,Calculator,"HandleActivation for {applicationName} initiated",1
+1667304245125,"DESKTOP-GAL2QRE",Taulo,Calculator,"Updating application {applicationName}",3
+1667304245126,"DESKTOP-GAL2QRE",Taulo,Calculator,"Adding application {applicationName}",1
+
+1667304245127,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_OPEN"
+1667304245128,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_FOCUS"
+
+1667304245130,"DESKTOP-GAL2QRE",Taulo,Calculator,"10","KEYBOARD_SEND_KEYS"
+1667304245131,"DESKTOP-GAL2QRE",Taulo,Calculator,"+","KEYBOARD_CLICK"
+1667304245132,"DESKTOP-GAL2QRE",Taulo,Calculator,"5","KEYBOARD_CLICK"
+1667304245133,"DESKTOP-GAL2QRE",Taulo,Calculator,"*","KEYBOARD_CLICK"
+1667304245134,"DESKTOP-GAL2QRE",Taulo,Calculator,"10","KEYBOARD_SEND_KEYS"
+1667304245135,"DESKTOP-GAL2QRE",Taulo,Calculator,"/","KEYBOARD_CLICK"
+1667304245136,"DESKTOP-GAL2QRE",Taulo,Calculator,"2","KEYBOARD_CLICK"
+1667304245137,"DESKTOP-GAL2QRE",Taulo,Calculator,"=","KEYBOARD_CLICK"
+
+1667304245138,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_UNFOCUS"
+1667304245139,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_CLOSE"
+
+1667304245141,"DESKTOP-GAL2QRE",Taulo,Calculator,"Stopped application {applicationName}",1
+	

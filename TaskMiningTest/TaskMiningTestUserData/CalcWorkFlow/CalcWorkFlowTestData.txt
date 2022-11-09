@@ -1,0 +1,42 @@
+@timestamp: Descending,"MachineName.keyword: Descending","UserName.keyword: Descending","applicationName.keyword: Descending","@mt.keyword: Descending",Count
+1667304245123,"DESKTOP-GAL2QRE",Taulo,Calculator,"HandleActivation for {applicationName} completed",1
+1667304245124,"DESKTOP-GAL2QRE",Taulo,Calculator,"HandleActivation for {applicationName} initiated",1
+1667304245125,"DESKTOP-GAL2QRE",Taulo,Calculator,"Updating application {applicationName}",3
+1667304245126,"DESKTOP-GAL2QRE",Taulo,Calculator,"Adding application {applicationName}",1
+
+1667304245127,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_OPEN"
+1667304245128,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_FOCUS"
+
+1667304245130,"DESKTOP-GAL2QRE",Taulo,Calculator,"10","MOUSE_LEFT_CLICK"
+1667304245131,"DESKTOP-GAL2QRE",Taulo,Calculator,"+","MOUSE_LEFT_CLICK"
+1667304245132,"DESKTOP-GAL2QRE",Taulo,Calculator,"5","MOUSE_LEFT_CLICK"
+1667304245133,"DESKTOP-GAL2QRE",Taulo,Calculator,"*","MOUSE_LEFT_CLICK"
+1667304245134,"DESKTOP-GAL2QRE",Taulo,Calculator,"10","MOUSE_LEFT_CLICK"
+1667304245135,"DESKTOP-GAL2QRE",Taulo,Calculator,"/","MOUSE_LEFT_CLICK"
+1667304245136,"DESKTOP-GAL2QRE",Taulo,Calculator,"2","MOUSE_LEFT_CLICK"
+1667304245137,"DESKTOP-GAL2QRE",Taulo,Calculator,"=","MOUSE_LEFT_CLICK"
+
+1667304245138,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_UNFOCUS"
+1667304245139,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_CLOSE"
+
+1667304245140,"DESKTOP-GAL2QRE",Taulo,Calculator,"Stopped application {applicationName}",1	
+
+1667304245141,"DESKTOP-GAL2QRE",Taulo,Excel,"Excel","WINDOW_OPEN"
+1667304245141,"DESKTOP-GAL2QRE",Taulo,Excel,"Excel","WINDOW_FOCUS"
+1667304245150,"DESKTOP-GAL2QRE",Taulo,Excel,"Excel","WINDOW_UNFOCUS"
+
+1667304245156,"DESKTOP-GAL2QRE",Taulo,Excel,"Excel","WINDOW_FOCUS"
+1667304245157,"DESKTOP-GAL2QRE",Taulo,Excel,"Hello World","KEYBOARD_SEND_KEYS"
+1667304245160,"DESKTOP-GAL2QRE",Taulo,Excel,"Excel","WINDOW_UNFOCUS"
+
+1667304245161,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_FOCUS"
+1667304245162,"DESKTOP-GAL2QRE",Taulo,Calculator,"Calculator","WINDOW_UNFOCUS"
+
+1667304245163,"DESKTOP-GAL2QRE",Taulo,Excel,"Excel","WINDOW_FOCUS"
+1667304245168,"DESKTOP-GAL2QRE",Taulo,Excel,"Excel","WINDOW_UNFOCUS"
+
+1667304245170,"DESKTOP-GAL2QRE",Taulo,Docker,"Docker","WINDOW_OPEN"
+1667304245170,"DESKTOP-GAL2QRE",Taulo,Docker,"Docker","WINDOW_FOCUS"
+1667304245171,"DESKTOP-GAL2QRE",Taulo,Docker,"Container","KEYBOARD_CLICK"
+1667304245172,"DESKTOP-GAL2QRE",Taulo,Docker,"Start","KEYBOARD_CLICK"
+1667304245180,"DESKTOP-GAL2QRE",Taulo,Docker,"Docker","WINDOW_UNFOCUS"

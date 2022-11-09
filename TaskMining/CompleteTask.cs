@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TaskMining
@@ -16,7 +17,7 @@ namespace TaskMining
         public Dictionary<string, double> TimeSpentPrApplication { get; }
         public int TotalAmountOfUserInteractionActions { get; }
         public List<string> IndividualTaskDataList { get; }
-        public List<UserInteractions> IndividualTaskUserInteractionsList { get; }
+        public List<string> IndividualTaskUserInteractionsList { get; }
         public DateTime TotalTasksCompletionTime { get; }
         public double TotalTasksCompletionTimeInSeconds { get; }
 
@@ -36,40 +37,6 @@ namespace TaskMining
             TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(double.Parse(IndividualTasks[0].TimeStamp), double.Parse(IndividualTasks[^1].TimeStamp));
             TotalTasksCompletionTime = TotalTaskCompletionTime(IndividualTasks[0], IndividualTasks[^1]);
         }
-
-        private DateTime GetDateTimeHelper(double ts)
-        {
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            return dateTime.AddSeconds(ts / 1000);
-        }
-
-        // Calculate the total time a complete task has been completed from app load to app close in seconds
-        private double TotalTaskCompletionTimeInSeconds(IndividualTask wtStart, IndividualTask wtEnd)
-        {
-            if (IndividualTasks.Count <= 1) throw new Exception("Not enough tasks exception"); // make exception to throw
-
-            return double.Parse(wtEnd.TimeStamp) - double.Parse(wtStart.TimeStamp);
-        }
-
-        private double TotalTaskCompletionTimeInSeconds(double wtStart, double wtEnd)
-        {
-            if (IndividualTasks.Count <= 1) throw new Exception("Not enough tasks exception"); // make exception to throw
-
-            return wtEnd - wtStart;
-        }
-
-        // does not work fix fix fix
-        private DateTime TotalTaskCompletionTime(IndividualTask wtStart, IndividualTask wtEnd)
-        {
-            if (IndividualTasks.Count <= 1) throw new Exception("Not enough tasks exception"); // make exception to throw
-            
-            double subtractTs = TotalTaskCompletionTimeInSeconds(wtStart, wtEnd);
-            long uxNow = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
-
-            DateTime time = GetDateTimeHelper(uxNow - subtractTs);
-            return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second);
-        }
-
         public void HandleCSV(string path)
         {
             try
@@ -103,10 +70,41 @@ namespace TaskMining
                     }
                 }
                 csvParser.Close();
-            } catch (FileNotFoundException ex)
+            }
+            catch (FileNotFoundException ex)
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private DateTime GetDateTimeHelper(double ts)
+        {
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            return dateTime.AddSeconds(ts / 1000);
+        }
+
+        // Calculate the total time a complete task has been completed from app load to app close in seconds
+        private double TotalTaskCompletionTimeInSeconds(IndividualTask wtStart, IndividualTask wtEnd)
+        {
+            return IndividualTasks.Count < 2 ? throw new Exception("Not enough tasks exception") : double.Parse(wtEnd.TimeStamp) - double.Parse(wtStart.TimeStamp);
+        }
+
+        private double TotalTaskCompletionTimeInSeconds(double wtStart, double wtEnd)
+        {
+            return IndividualTasks.Count < 2 ? throw new Exception("Not enough tasks exception") : wtEnd - wtStart;
+        }
+
+        // does not work, maybe fix or delete if useless
+        private DateTime TotalTaskCompletionTime(IndividualTask wtStart, IndividualTask wtEnd)
+        {
+            if (IndividualTasks.Count <= 1) throw new Exception("Not enough tasks exception"); // make exception to throw
+            
+            double subtractTs = TotalTaskCompletionTimeInSeconds(wtStart, wtEnd);
+            long uxNow = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+            double res = uxNow - subtractTs;
+            DateTime time = GetDateTimeHelper(res);
+
+            return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second);
         }
 
         /// <summary>
@@ -122,7 +120,7 @@ namespace TaskMining
                .Where(task => task.Element.ToLower().Equals(taskData.ToLower()))
                .FirstOrDefault();
             
-            return tasks != null ? tasks.Counter : throw new Exception("an exception msg"); // make exception;
+            return tasks != null ? tasks.Counter : throw new Exception($"{taskData} an exception msg"); // make exception;
         }
 
         /// <summary>
@@ -151,10 +149,10 @@ namespace TaskMining
                 .ToList();
         }
 
-        private List<UserInteractions> GetIndividualTaskUserInteractions()
+        private List<string> GetIndividualTaskUserInteractions()
         {
             return IndividualTasks
-                .Select(task => task.Data.UserInteractions)
+                .Select(task => task.Data.UserInteractions.ToString())
                 .ToList();
         }
 
@@ -162,6 +160,7 @@ namespace TaskMining
         {
             var dic = new Dictionary<string, double>();
 
+            // the timestamp when the window is focused
             var taskStart = IndividualTasks
                 .GroupBy(task => new { task.TimeStamp, task.ApplicationName, task.Data.UserInteractions })
                 .Select(ts => ts.Key)
@@ -169,6 +168,7 @@ namespace TaskMining
                 .Select(task => new { task.ApplicationName, tsStart = task.TimeStamp })
                 .ToList();
 
+            // the timestmap when the window is unfocused
             var taskEnd = IndividualTasks
                 .GroupBy(task => new { task.TimeStamp, task.ApplicationName, task.Data.UserInteractions })
                 .Select(ts => ts.Key)
@@ -206,18 +206,16 @@ namespace TaskMining
         private int CalcTotalAmountOfUserInteractionActions()
         {
             int result = 0;
-            var task = IndividualTasks
+            IndividualTasks
                 .GroupBy(task => new { task.Data.UserInteractions })
                 .Select(ui => new { Element = ui, Counter = ui.Count() })
                 .Where(ui => !ui.Element.Key.UserInteractions.Equals(UserInteractions.MANATEE))
-                .ToList();
-            
-            foreach (var t in task)
-            {
-                result += t.Counter;
-            }
+                .ToList()
+                .ForEach(t => result += t.Counter);
+
             return result;
         }
+
         public bool ArrayIsEqual(List<IndividualTask> secondList)
         {
             return IndividualTasks.Count != secondList.Count ? false : IndividualTasks.SequenceEqual(secondList);

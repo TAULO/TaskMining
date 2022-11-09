@@ -26,12 +26,6 @@ namespace TaskMining
             var taskKopi = new CompleteTask("CompleteTaskKopi", pathCopy);
             var taskKopi1 = new CompleteTask("CompleteTaskKopi1", pathCopy1);
 
-            var tasks = AnalyseCompleteTask.CompleteTasks = new List<CompleteTask>() { task1, task2, task3, task4, taskKopi, taskKopi1 };
-
-            foreach (var item in task2.TimeSpentPrApplication)
-            {
-                //Console.WriteLine(item);
-            }
 
             //foreach (var completeTask in tasks)
             //{
@@ -80,6 +74,30 @@ namespace TaskMining
             //    Console.WriteLine(task.TotalAmountOfUserInteractionActions);
             //}
             //Console.WriteLine();
+
+            //Console.WriteLine(AnalyseCompleteTask.IndividualTaskTotalFrequency("docker"));
+
+
+            //int manatee = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("MANATEE");
+            //int winOpen = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_OPEN");
+            //int winFocus = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_FOCUS");
+            //int keyClick = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("KEYBOARD_CLICK");
+            //int keySend = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("KEYBOARD_SEND_KEYS");
+            //int winUnfocus = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_UNFOCUS");
+            //int winClosed = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_CLOSE");
+
+            //Console.WriteLine($"{manatee}, {winOpen}, {winFocus}, {keyClick}, {keySend}, {winUnfocus}, {winClosed}");
+
+            //foreach(var item in AnalyseCompleteTask.CompletionTimePrCompleteTask())
+            //{
+            //    Console.WriteLine(item);
+            //}
+
+            //Console.WriteLine(AnalyseCompleteTask.CompleteTaskAverageCompletionTime());
+
+            //Console.WriteLine(task1.TotalCompleteTaskApplicationsUsed);
+
+            
         }
     }
 }

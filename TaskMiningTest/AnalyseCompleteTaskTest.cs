@@ -22,15 +22,11 @@ namespace TaskMiningTest
 
             var taskKopi = new CompleteTask("CompleteTaskKopi", pathCopy);
             var taskKopi1 = new CompleteTask("CompleteTaskKopi1", pathCopy1);
-
-            AnalyseCompleteTask.CompleteTasks = new List<CompleteTask>() { task1, task2, task3, task4, taskKopi, taskKopi1 };
         }
 
         [TestMethod]
         public void TestIndividualTaskTotalFrequency()
         {
-            LoadData();
-            
             int plus = AnalyseCompleteTask.IndividualTaskTotalFrequency("+");
             int ten = AnalyseCompleteTask.IndividualTaskTotalFrequency("10");
             int calc = AnalyseCompleteTask.IndividualTaskTotalFrequency("Calculator");
@@ -52,8 +48,6 @@ namespace TaskMiningTest
         [TestMethod]
         public void TestIndividualUserInteractionsTotalFrequency()
         {
-            LoadData();
-
             int manatee = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("MANATEE");
             int winOpen = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_OPEN");
             int winFocus = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_FOCUS");
@@ -74,8 +68,6 @@ namespace TaskMiningTest
         [TestMethod]
         public void TestIndividualTaskTotalFrequencyDic()
         {
-            LoadData();
-
             var dic = AnalyseCompleteTask.IndividualTaskTotalFrequency();
 
             int calc = dic["Calculator"];
@@ -104,8 +96,6 @@ namespace TaskMiningTest
         [TestMethod]
         public void TestIndividualUserInteractionsTotalFrequencyDic()
         {
-            LoadData();
-
             var dic = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency();
 
             int manatee = dic["MANATEE"];
@@ -125,6 +115,33 @@ namespace TaskMiningTest
             Assert.AreEqual(6, winClose);
             Assert.AreEqual(4, keySendKeys);
             Assert.AreEqual(12, keyClick);
+        }
+
+        [TestMethod]
+        public void TestCompletionTimePrCompleteTask()
+        {
+            var dic = AnalyseCompleteTask.CompletionTimePrCompleteTask();
+
+            double task1 = dic["CompleteTaskOne"];
+            double task2 = dic["CompleteTaskTwo"];
+            double task3 = dic["CompleteTaskThree"];
+            double task4 = dic["CompleteTaskFour"];
+            double task5 = dic["CompleteTaskKopi"];
+            double task6 = dic["CompleteTaskKopi1"];
+
+            Assert.AreEqual(57, task1);
+            Assert.AreEqual(18, task2);
+            Assert.AreEqual(18, task3);
+            Assert.AreEqual(18, task4);
+            Assert.AreEqual(18, task5);
+            Assert.AreEqual(18, task6);
+        }
+
+        [TestMethod]
+        public void TestCompleteTaskAverageCompletionTime()
+        {
+            double averageTime = AnalyseCompleteTask.CompleteTaskAverageCompletionTime();
+            Assert.AreEqual(24,5, averageTime);
         }
     }
 }

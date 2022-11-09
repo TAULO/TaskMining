@@ -11,7 +11,7 @@ namespace TaskMining
         // repeatable complete task
         //
 
-        public static List<CompleteTask> CompleteTasks = new List<CompleteTask>();
+        public static List<CompleteTask> CompleteTasks { get => GetData(); }
         public static int TotalCompleteTasks { get => CompleteTasks.Count; }
 
         public static List<CompleteTask> RepeatableCompleteTasks()
@@ -95,19 +95,20 @@ namespace TaskMining
             foreach (var task in CompleteTasks)
             {
                 var taskDic = task.IndividualTasks
-                    .GroupBy(task => task.Data.Data)
-                    .Select(data => new { Element = data.Key, Counter = data.Count() })
-                    .ToDictionary(dic => new { dic.Element, dic.Counter });
+                    .GroupBy(task => task.Data)
+                    .Select(data => new { Ui = data.Key.UserInteractions, Data = data.Key, Counter = data.Count() })
+                    .Where(ui => !ui.Ui.Equals(UserInteractions.MANATEE))
+                    .ToDictionary(dic => new { dic.Data, dic.Counter });
 
                 foreach (var dic in taskDic)
                 {
-                    if (!result.ContainsKey(dic.Key.Element))
+                    if (!result.ContainsKey(dic.Key.Data.Data))
                     {
-                        result.Add(dic.Key.Element, dic.Value.Counter);
+                        result.Add(dic.Key.Data.Data, dic.Value.Counter);
                     }
                     else
                     {
-                        result[dic.Key.Element] += dic.Value.Counter;
+                        result[dic.Key.Data.Data] += dic.Value.Counter;
                     }
                 }
             }
@@ -195,6 +196,26 @@ namespace TaskMining
                 outDic.Add(task.CompleteTaskName, innerDic);
             }
             return outDic;
+        }
+
+        public static List<CompleteTask> GetData()
+        {
+            string path1 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1.txt";
+            string path2 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow2.txt";
+            string path3 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow3.txt";
+            string path4 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow4.txt";
+
+            string pathCopy = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi.txt";
+            string pathCopy1 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi1.txt";
+
+            var task1 = new CompleteTask("CompleteTaskOne", path1);
+            var task2 = new CompleteTask("CompleteTaskTwo", path2);
+            var task3 = new CompleteTask("CompleteTaskThree", path3);
+            var task4 = new CompleteTask("CompleteTaskFour", path4);
+            var taskKopi = new CompleteTask("CompleteTaskKopi", pathCopy);
+            var taskKopi1 = new CompleteTask("CompleteTaskKopi1", pathCopy1);
+
+            return new List<CompleteTask> { task1, task2, task3, task4, taskKopi, taskKopi1 };
         }
     }
 }   

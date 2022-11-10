@@ -10,15 +10,35 @@ namespace TaskMining
 {
     public class CompleteTask : IHandleCSVData
     {
+        [JsonPropertyName("ID")]
         public string CompleteTaskID { get; }
+
+        [JsonPropertyName("name")]
         public string CompleteTaskName { get; set; }
-        public int TotalIndividualTasks { get; }
+        
+        
+        [JsonPropertyName("applicationsUsed")]
         public int TotalCompleteTaskApplicationsUsed { get; }
+        
+        [JsonPropertyName("timeSpentPrApplication")]
         public Dictionary<string, double> TimeSpentPrApplication { get; }
+        
+        [JsonPropertyName("tasksCount")]
+        public int TotalIndividualTasks { get; }
+        
+        [JsonPropertyName("userInteractionsCount")]
         public int TotalAmountOfUserInteractionActions { get; }
+        
+        [JsonPropertyName("tasks")]
         public List<string> IndividualTaskDataList { get; }
+       
+        [JsonPropertyName("userInteractions")]
         public List<string> IndividualTaskUserInteractionsList { get; }
+        
+        [JsonPropertyName("taskCompletionTime")]
         public DateTime TotalTasksCompletionTime { get; }
+        
+        [JsonPropertyName("taskCompletionTimeSeconds")]
         public double TotalTasksCompletionTimeInSeconds { get; }
 
         public readonly List<IndividualTask> IndividualTasks = new List<IndividualTask>();

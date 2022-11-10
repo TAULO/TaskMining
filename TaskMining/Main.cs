@@ -10,23 +10,6 @@ namespace TaskMining
     {
         public static void Main(string[] args)
         {
-            string path1 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1.txt";
-            string path2 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow2.txt";
-            string path3 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow3.txt";
-            string path4 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow4.txt";
-            
-            string pathCopy = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi.txt";
-            string pathCopy1 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi1.txt";
-
-            var task1 = new CompleteTask("CompleteTaskOne", path1);
-            var task2 = new CompleteTask("CompleteTaskTwo", path2);
-            var task3 = new CompleteTask("CompleteTaskThree", path3);
-            var task4 = new CompleteTask("CompleteTaskFour", path4);
-
-            var taskKopi = new CompleteTask("CompleteTaskKopi", pathCopy);
-            var taskKopi1 = new CompleteTask("CompleteTaskKopi1", pathCopy1);
-
-
             //foreach (var completeTask in tasks)
             //{
             //    Console.WriteLine(completeTask.CompleteTaskName);
@@ -39,7 +22,6 @@ namespace TaskMining
             //    Console.WriteLine();
             //}
 
-            AnalyseCompleteTask.RepeatableCompleteTasks();
             //Console.WriteLine(AnalyseCompleteTask.IndividualTaskTotalFrequency("10"));
             //Console.WriteLine(AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency(UserInteractions.MOUSE_LEFT_CLICK));
 
@@ -97,6 +79,7 @@ namespace TaskMining
 
             //Console.WriteLine(task1.TotalCompleteTaskApplicationsUsed);
 
+            Console.WriteLine(AnalyseCompleteTask.CompleteTasks[0].TimeSpentPrApplication.Count);
             
         }
     }

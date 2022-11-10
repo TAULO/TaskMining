@@ -36,8 +36,8 @@ namespace TaskMiningTest
             Assert.AreEqual(6, plus, "+");
             Assert.AreEqual(12, ten, "10");
             Assert.AreEqual(26, calc, "calculator");
-            Assert.AreEqual(6, excel, "excel");
-            Assert.AreEqual(2, docker, "docker");
+            Assert.AreEqual(7, excel, "excel");
+            Assert.AreEqual(3, docker, "docker");
 
             // test case sensitive
             int calcCase = AnalyseCompleteTask.IndividualTaskTotalFrequency("CalCulaToR");
@@ -57,10 +57,10 @@ namespace TaskMiningTest
             int winClosed = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_CLOSE");
 
             Assert.AreEqual(30, manatee);
-            Assert.AreEqual(6, winOpen);
+            Assert.AreEqual(8, winOpen);
             Assert.AreEqual(11, winFocus);
-            Assert.AreEqual(12, keyClick);
-            Assert.AreEqual(4, keySend);
+            Assert.AreEqual(14, keyClick);
+            Assert.AreEqual(5, keySend);
             Assert.AreEqual(11, winUnfocus);
             Assert.AreEqual(6, winClosed);
         }
@@ -89,8 +89,8 @@ namespace TaskMiningTest
             Assert.AreEqual(6, divide);
             Assert.AreEqual(6, two);
             Assert.AreEqual(6, equal);
-            Assert.AreEqual(6, excel);
-            Assert.AreEqual(2, docker);
+            Assert.AreEqual(7, excel);
+            Assert.AreEqual(3, docker);
         }
 
         [TestMethod]
@@ -108,13 +108,13 @@ namespace TaskMiningTest
             int keyClick = dic["KEYBOARD_CLICK"];
 
             Assert.AreEqual(30, manatee);
-            Assert.AreEqual(6, winOpen);
+            Assert.AreEqual(8, winOpen);
             Assert.AreEqual(11, winFocus);
             Assert.AreEqual(32, mouseLeftClick);
             Assert.AreEqual(11, winUnfocus);
             Assert.AreEqual(6, winClose);
-            Assert.AreEqual(4, keySendKeys);
-            Assert.AreEqual(12, keyClick);
+            Assert.AreEqual(5, keySendKeys);
+            Assert.AreEqual(14, keyClick);
         }
 
         [TestMethod]

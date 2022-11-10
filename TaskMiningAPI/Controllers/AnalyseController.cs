@@ -4,7 +4,7 @@ using TaskMining;
 
 namespace TaskMiningAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tasks/[controller]")]
     [ApiController]
     public class AnalyseController : ControllerBase
     {

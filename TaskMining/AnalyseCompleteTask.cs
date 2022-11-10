@@ -8,39 +8,10 @@ namespace TaskMining
 {
     public class AnalyseCompleteTask
     {
-        // repeatable complete task
-        //
-
         public static List<CompleteTask> CompleteTasks { get => GetData(); }
         public static int TotalCompleteTasks { get => CompleteTasks.Count; }
-
         public static List<CompleteTask> RepeatableCompleteTasks()
         {
-
-            //for (int i = 0; i < CompleteTasks.Count; i++)
-            //{
-            //    //Console.WriteLine(CompleteTasks[i].CompleteTaskName + ":");
-            //    var test = CompleteTasks.GroupBy(task => task.IndividualTasks)
-            //        .Select(task => new { task.Key[i].Data.Data, task.Key[i].Data.UserInteractions })
-            //        .Where()
-            //        .ToList();
-
-            //    for (int j = 0; j < test.Count; j++)
-            //    {
-            //        Console.WriteLine(test[j]);
-            //    }
-            //}
-
-            //for (int i = 0; i < CompleteTasks.Count; i++)
-            //{
-            //    for (int j = 0; j < CompleteTasks[i].IndividualTasks.Count; j++)
-            //    {
-            //        if (CompleteTasks[4].IndividualTasks[j].Data.IsEqual(CompleteTasks[4].IndividualTasks[j].Data))
-            //        {
-            //            Console.WriteLine(CompleteTasks[4].IndividualTasks[j].Data.Data + "......." + CompleteTasks[4].IndividualTasks[j].Data.Data);
-            //        }
-            //    }
-            //}
             return new List<CompleteTask>();
         }
 
@@ -59,7 +30,8 @@ namespace TaskMining
                     .Select(data => new { Element = data.Key, Counter = data.Count() })
                     .Where(task => task.Element.ToLower().Equals(taskData.ToLower()))
                     .FirstOrDefault();
-                total += taskCount != null ? taskCount.Counter : 0; // make exception
+
+                total += taskCount != null ? taskCount.Counter : 0; // throw exception?
             }
             return total;
         }
@@ -125,7 +97,7 @@ namespace TaskMining
                     .GroupBy(task => task.Data.UserInteractions.ToString())
                     .Select(data => new { Element = data.Key, Counter = data.Count() })
                     .ToDictionary(dic => new { dic.Element, dic.Counter });
-
+                    
                 foreach (var dic in taskDic)
                 {
                     if (!result.ContainsKey(dic.Key.Element))

@@ -11,7 +11,7 @@ namespace TaskMiningAPI.Controllers
         [HttpGet]
         public List<CompleteTask> GetAllTasks()
         {
-            return AnalyseCompleteTask.GetData();
+            return AnalyseCompleteTask.CompleteTasks;
         }
 
         [HttpGet]
@@ -117,7 +117,7 @@ namespace TaskMiningAPI.Controllers
         }
 
         [HttpGet]
-        [Route("={id}/data={data}")]
+        [Route("id={id}/data={data}")]
         public int GetTaskDataFreqByID(string id, string data)
         {
             var task = AnalyseCompleteTask

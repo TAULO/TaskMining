@@ -79,8 +79,6 @@ namespace TaskMining
 
             //Console.WriteLine(task1.TotalCompleteTaskApplicationsUsed);
 
-            Console.WriteLine(AnalyseCompleteTask.CompleteTasks[0].TimeSpentPrApplication.Count);
-            
         }
     }
 }

@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskMining;
+using System.Diagnostics;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace TaskMiningAPI.Controllers
 {
@@ -142,6 +146,61 @@ namespace TaskMiningAPI.Controllers
 
             return task != null ? task.IndividualUserInteractionsFrequency(ui) : 
                 throw new Exception($"No task corresponds with {id} exception");
+        }
+
+        [HttpPost]
+        public async void PostCompleteTasks()
+        {
+            if (Response.StatusCode == 200)
+            {
+                var completeTasks = AnalyseCompleteTask.CompleteTasks;
+                var reader = new StreamReader(Request.Body);
+                var data = await reader.ReadToEndAsync();
+
+                JArray array = JArray.Parse(data);
+                foreach (JObject obj in array.Children<JObject>())
+                {
+                    var jID = obj["id"];
+                    var jName = obj["name"];
+                    var jData = obj["data"];
+
+                    // guard check: duplicate name & duplicate id
+                    for (int i = 0; i < completeTasks.Count; i++)
+                    {
+                        if (jID.ToString().Contains(completeTasks[i].CompleteTaskID)) 
+                        {
+                            // handle duplicate ID
+                        }
+                        if (jName.ToString().Contains(completeTasks[i].CompleteTaskName))
+                        {
+                            // handle duplicate names
+                        }
+                    }
+
+                    var bytes = Convert.FromBase64String(jData.ToString().Split(",")[1]);
+                    var contents = new StreamContent(new MemoryStream(bytes));
+
+                    completeTasks.Add(new CompleteTask(jID.ToString(), jName.ToString(), contents.ReadAsStream()));
+                }
+            } else
+            {
+                Debug.WriteLine("HTTP Error: " + Response.StatusCode);
+            }
+        }
+
+        [HttpGet]
+        [Route("reset")]
+        public List<CompleteTask> DeleteCompleteTasks()
+        {
+            // save old tasks
+            var oldTasks = new List<CompleteTask>();
+            foreach(var item in AnalyseCompleteTask.CompleteTasks) oldTasks.Add(item); 
+
+            // reset tasks
+            AnalyseCompleteTask.CompleteTasks = new List<CompleteTask>();
+
+            // return old tasks
+            return oldTasks;
         }
     }
 }

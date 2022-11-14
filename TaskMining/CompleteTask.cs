@@ -1,14 +1,16 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace TaskMining
 {
-    public class CompleteTask : IHandleCSVData
+    public class CompleteTask 
     {
         [JsonPropertyName("ID")]
         public string CompleteTaskID { get; }
@@ -53,11 +55,11 @@ namespace TaskMining
         public Dictionary<string, int> IndividualCountTaskPrUser { get; }
 
         public readonly List<IndividualTask> IndividualTasks = new List<IndividualTask>();
-        public CompleteTask(string individualTaskName, string taskDataPath)
+        public CompleteTask(string completeTaskName, Stream dataStream)
         {
-            HandleCSV(taskDataPath);
+            HandleCSV(dataStream);
             CompleteTaskID = Guid.NewGuid().ToString("N");
-            CompleteTaskName = individualTaskName;
+            CompleteTaskName = completeTaskName;
             TotalIndividualTasks = IndividualTasks.Count;
             TotalAmountOfUsers = CalcTotalAmountOfUsers();
             TotalCompleteTaskApplicationsUsed = CalcTotalCompleteTaskApplicationsUsed();
@@ -70,11 +72,49 @@ namespace TaskMining
             TotalTasksCompletionTime = TotalTaskCompletionTime(IndividualTasks[0], IndividualTasks[^1]);
             IndividualCountTaskPrUser = CalcIndividualCountTaskPrUser();
         }
-        public void HandleCSV(string path)
+
+        public CompleteTask(string id, string completeTaskName, Stream dataStream)
+        {
+            HandleCSV(dataStream);
+            CompleteTaskID = id;
+            CompleteTaskName = completeTaskName;
+            TotalIndividualTasks = IndividualTasks.Count;
+            TotalAmountOfUsers = CalcTotalAmountOfUsers();
+            TotalCompleteTaskApplicationsUsed = CalcTotalCompleteTaskApplicationsUsed();
+            TimeSpentPrApplication = CalcTimeSpentPrApplication();
+            TotalAmountOfUserInteractionActions = CalcTotalAmountOfUserInteractionActions();
+            IndividualTaskDataList = GetIndividualTaskData();
+            IndividualTaskUserInteractionsList = GetIndividualTaskUserInteractions();
+            TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(IndividualTasks[0], IndividualTasks[^1]);
+            TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(double.Parse(IndividualTasks[0].TimeStamp), double.Parse(IndividualTasks[^1].TimeStamp));
+            TotalTasksCompletionTime = TotalTaskCompletionTime(IndividualTasks[0], IndividualTasks[^1]);
+            IndividualCountTaskPrUser = CalcIndividualCountTaskPrUser();
+        }
+
+        // for testing
+        public CompleteTask(string completeTaskName, string csvPath)
+        {
+            HandleCSV(csvPath);
+            CompleteTaskID = Guid.NewGuid().ToString("N");
+            CompleteTaskName = completeTaskName;
+            TotalIndividualTasks = IndividualTasks.Count;
+            TotalAmountOfUsers = CalcTotalAmountOfUsers();
+            TotalCompleteTaskApplicationsUsed = CalcTotalCompleteTaskApplicationsUsed();
+            TimeSpentPrApplication = CalcTimeSpentPrApplication();
+            TotalAmountOfUserInteractionActions = CalcTotalAmountOfUserInteractionActions();
+            IndividualTaskDataList = GetIndividualTaskData();
+            IndividualTaskUserInteractionsList = GetIndividualTaskUserInteractions();
+            TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(IndividualTasks[0], IndividualTasks[^1]);
+            TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(double.Parse(IndividualTasks[0].TimeStamp), double.Parse(IndividualTasks[^1].TimeStamp));
+            TotalTasksCompletionTime = TotalTaskCompletionTime(IndividualTasks[0], IndividualTasks[^1]);
+            IndividualCountTaskPrUser = CalcIndividualCountTaskPrUser();
+        }
+        public void HandleCSV(Stream data)
         {
             try
             {
-                var csvParser = new TextFieldParser(path);
+               //make check if path is .csv
+                var csvParser = new TextFieldParser(data);
 
                 csvParser.SetDelimiters(new string[] { "," });
                 csvParser.HasFieldsEnclosedInQuotes = true;
@@ -96,10 +136,50 @@ namespace TaskMining
                         string machineName = fields[1];
                         string userName = fields[2];
                         string applicationName = fields[3];
+                        IndividualTaskData indData = new IndividualTaskData(fields[4], IndividualTaskData.GetUserInteractions(fields[5]));
 
-                        IndividualTaskData data = new IndividualTaskData(fields[4], IndividualTaskData.GetUserInteractions(fields[5]));
+                        IndividualTasks.Add(new IndividualTask(timeStamp, machineName, userName, applicationName, indData));
+                    }
+                }
+                csvParser.Close();
+            }
+            catch (FileNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
-                        IndividualTasks.Add(new IndividualTask(timeStamp, machineName, userName, applicationName, data));
+        // for testing
+        public void HandleCSV(string data)
+        {
+            try
+            {
+                //make check if path is .csv
+                var csvParser = new TextFieldParser(data);
+
+                csvParser.SetDelimiters(new string[] { "," });
+                csvParser.HasFieldsEnclosedInQuotes = true;
+
+                // skip header line
+                csvParser.ReadLine();
+
+                while (!csvParser.EndOfData)
+                {
+                    string[]? fields = csvParser.ReadFields();
+
+                    if (fields == null)
+                    {
+                        throw new ArgumentNullException(nameof(fields));
+                    }
+                    else
+                    {
+                        string timeStamp = fields[0];
+                        string machineName = fields[1];
+                        string userName = fields[2];
+                        string applicationName = fields[3];
+                        IndividualTaskData indData = new IndividualTaskData(fields[4], IndividualTaskData.GetUserInteractions(fields[5]));
+
+                        IndividualTasks.Add(new IndividualTask(timeStamp, machineName, userName, applicationName, indData));
                     }
                 }
                 csvParser.Close();
@@ -152,8 +232,8 @@ namespace TaskMining
                .Select(x => new { Element = x.Key, Counter = x.Count() })
                .Where(task => task.Element.ToLower().Equals(taskData.ToLower()))
                .FirstOrDefault();
-            
-            return tasks != null ? tasks.Counter : throw new Exception($"{taskData} an exception msg"); // make exception;
+
+            return tasks != null ? tasks.Counter : 0;
         }
 
         /// <summary>
@@ -172,7 +252,7 @@ namespace TaskMining
                 .Where(task => task.Element.ToString().Equals(userInteraction) || task.Element.Equals(userInteraction))
                 .FirstOrDefault();
 
-            return tasks != null ? tasks.Counter : throw new Exception("an exception msg"); // make exception
+            return tasks != null ? tasks.Counter : 0;
         }
 
         private List<string> GetIndividualTaskData()
@@ -234,7 +314,7 @@ namespace TaskMining
                 .Where(task => task.Element.Equals(UserInteractions.WINDOW_OPEN))
                 .FirstOrDefault();
 
-            return tasks != null ? tasks.Counter : throw new Exception("an exception msg"); // make exception; 
+            return tasks != null ? tasks.Counter : 0; 
         }
 
         private int CalcTotalAmountOfUserInteractionActions()

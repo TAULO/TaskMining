@@ -5,28 +5,30 @@ namespace TaskMiningTest
     [TestClass]
     public class AnalyseCompleteTaskTest
     {
-        public void LoadData()
+        private List<CompleteTask> TestData()
         {
             string path1 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMiningTest/TaskMiningTestUserData/CalcWorkFlow/CalcWorkFlow1.txt";
             string path2 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMiningTest/TaskMiningTestUserData/CalcWorkFlow/CalcWorkFlow2.txt";
             string path3 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMiningTest/TaskMiningTestUserData/CalcWorkFlow/CalcWorkFlow3.txt";
             string path4 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMiningTest/TaskMiningTestUserData/CalcWorkFlow/CalcWorkFlow4.txt";
-
-            string pathCopy = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi.txt";
-            string pathCopy1 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi1.txt";
+            string pathCopy = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMiningTest/TaskMiningTestUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi.txt";
+            string pathCopy1 = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMiningTest/TaskMiningTestUserData/CalcWorkFlow/CalcWorkFlow1 - Kopi1.txt";
 
             var task1 = new CompleteTask("CompleteTaskOne", path1);
             var task2 = new CompleteTask("CompleteTaskTwo", path2);
             var task3 = new CompleteTask("CompleteTaskThree", path3);
             var task4 = new CompleteTask("CompleteTaskFour", path4);
-
             var taskKopi = new CompleteTask("CompleteTaskKopi", pathCopy);
             var taskKopi1 = new CompleteTask("CompleteTaskKopi1", pathCopy1);
+
+            return new List<CompleteTask> { task1, task2, task3, task4, taskKopi, taskKopi1 };
         }
 
         [TestMethod]
         public void TestIndividualTaskTotalFrequency()
         {
+            AnalyseCompleteTask.CompleteTasks = TestData();
+
             int plus = AnalyseCompleteTask.IndividualTaskTotalFrequency("+");
             int ten = AnalyseCompleteTask.IndividualTaskTotalFrequency("10");
             int calc = AnalyseCompleteTask.IndividualTaskTotalFrequency("Calculator");
@@ -36,8 +38,8 @@ namespace TaskMiningTest
             Assert.AreEqual(6, plus, "+");
             Assert.AreEqual(12, ten, "10");
             Assert.AreEqual(26, calc, "calculator");
-            Assert.AreEqual(7, excel, "excel");
-            Assert.AreEqual(3, docker, "docker");
+            Assert.AreEqual(6, excel, "excel");
+            Assert.AreEqual(2, docker, "docker");
 
             // test case sensitive
             int calcCase = AnalyseCompleteTask.IndividualTaskTotalFrequency("CalCulaToR");
@@ -48,6 +50,8 @@ namespace TaskMiningTest
         [TestMethod]
         public void TestIndividualUserInteractionsTotalFrequency()
         {
+            AnalyseCompleteTask.CompleteTasks = TestData();
+
             int manatee = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("MANATEE");
             int winOpen = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_OPEN");
             int winFocus = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_FOCUS");
@@ -57,10 +61,10 @@ namespace TaskMiningTest
             int winClosed = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency("WINDOW_CLOSE");
 
             Assert.AreEqual(30, manatee);
-            Assert.AreEqual(8, winOpen);
+            Assert.AreEqual(6, winOpen);
             Assert.AreEqual(11, winFocus);
-            Assert.AreEqual(14, keyClick);
-            Assert.AreEqual(5, keySend);
+            Assert.AreEqual(12, keyClick);
+            Assert.AreEqual(4, keySend);
             Assert.AreEqual(11, winUnfocus);
             Assert.AreEqual(6, winClosed);
         }
@@ -68,6 +72,8 @@ namespace TaskMiningTest
         [TestMethod]
         public void TestIndividualTaskTotalFrequencyDic()
         {
+            AnalyseCompleteTask.CompleteTasks = TestData();
+
             var dic = AnalyseCompleteTask.IndividualTaskTotalFrequency();
 
             int calc = dic["Calculator"];
@@ -89,13 +95,15 @@ namespace TaskMiningTest
             Assert.AreEqual(6, divide);
             Assert.AreEqual(6, two);
             Assert.AreEqual(6, equal);
-            Assert.AreEqual(7, excel);
-            Assert.AreEqual(3, docker);
+            Assert.AreEqual(6, excel);
+            Assert.AreEqual(2, docker);
         }
 
         [TestMethod]
         public void TestIndividualUserInteractionsTotalFrequencyDic()
         {
+            AnalyseCompleteTask.CompleteTasks = TestData();
+
             var dic = AnalyseCompleteTask.IndividualUserInteractionsTotalFrequency();
 
             int manatee = dic["MANATEE"];
@@ -108,18 +116,20 @@ namespace TaskMiningTest
             int keyClick = dic["KEYBOARD_CLICK"];
 
             Assert.AreEqual(30, manatee);
-            Assert.AreEqual(8, winOpen);
+            Assert.AreEqual(6, winOpen);
             Assert.AreEqual(11, winFocus);
             Assert.AreEqual(32, mouseLeftClick);
             Assert.AreEqual(11, winUnfocus);
             Assert.AreEqual(6, winClose);
-            Assert.AreEqual(5, keySendKeys);
-            Assert.AreEqual(14, keyClick);
+            Assert.AreEqual(4, keySendKeys);
+            Assert.AreEqual(12, keyClick);
         }
 
         [TestMethod]
         public void TestCompletionTimePrCompleteTask()
         {
+            AnalyseCompleteTask.CompleteTasks = TestData();
+
             var dic = AnalyseCompleteTask.CompletionTimePrCompleteTask();
 
             double task1 = dic["CompleteTaskOne"];
@@ -140,6 +150,8 @@ namespace TaskMiningTest
         [TestMethod]
         public void TestCompleteTaskAverageCompletionTime()
         {
+            AnalyseCompleteTask.CompleteTasks = TestData();
+
             double averageTime = AnalyseCompleteTask.CompleteTaskAverageCompletionTime();
             Assert.AreEqual(24,5, averageTime);
         }

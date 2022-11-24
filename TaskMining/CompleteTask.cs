@@ -32,7 +32,10 @@ namespace TaskMining
         
         [JsonPropertyName("timeSpentPrApplication")]
         public Dictionary<string, double> TimeSpentPrApplication { get; }
-        
+
+        [JsonPropertyName("individualTaskTime")]
+        public List<double> IndividualTaskTime { get; }
+
         [JsonPropertyName("tasksCount")]
         public int TotalIndividualTasks { get; }
         
@@ -64,6 +67,7 @@ namespace TaskMining
             TotalAmountOfUsers = CalcTotalAmountOfUsers();
             TotalCompleteTaskApplicationsUsed = CalcTotalCompleteTaskApplicationsUsed();
             TimeSpentPrApplication = CalcTimeSpentPrApplication();
+            IndividualTaskTime = CalcIndividualTaskTime();
             TotalAmountOfUserInteractionActions = CalcTotalAmountOfUserInteractionActions();
             IndividualTaskDataList = GetIndividualTaskData();
             IndividualTaskUserInteractionsList = GetIndividualTaskUserInteractions();
@@ -82,6 +86,7 @@ namespace TaskMining
             TotalAmountOfUsers = CalcTotalAmountOfUsers();
             TotalCompleteTaskApplicationsUsed = CalcTotalCompleteTaskApplicationsUsed();
             TimeSpentPrApplication = CalcTimeSpentPrApplication();
+            IndividualTaskTime = CalcIndividualTaskTime();
             TotalAmountOfUserInteractionActions = CalcTotalAmountOfUserInteractionActions();
             IndividualTaskDataList = GetIndividualTaskData();
             IndividualTaskUserInteractionsList = GetIndividualTaskUserInteractions();
@@ -99,6 +104,7 @@ namespace TaskMining
             CompleteTaskName = completeTaskName;
             TotalIndividualTasks = IndividualTasks.Count;
             TotalAmountOfUsers = CalcTotalAmountOfUsers();
+            IndividualTaskTime = CalcIndividualTaskTime();
             TotalCompleteTaskApplicationsUsed = CalcTotalCompleteTaskApplicationsUsed();
             TimeSpentPrApplication = CalcTimeSpentPrApplication();
             TotalAmountOfUserInteractionActions = CalcTotalAmountOfUserInteractionActions();
@@ -218,6 +224,23 @@ namespace TaskMining
             DateTime time = GetDateTimeHelper(res);
 
             return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second);
+        }
+
+        private List<double> CalcIndividualTaskTime()
+        {
+            var list = new List<double>();
+            for (int i = 0; i < IndividualTasks.Count; i++)
+            {
+                if (i == IndividualTasks.Count - 1)
+                {
+                    list.Add(0);
+                }
+                else
+                {
+                    list.Add(double.Parse(IndividualTasks[i + 1].TimeStamp) - double.Parse(IndividualTasks[i].TimeStamp));
+                }
+            }
+            return list;
         }
 
         /// <summary>
@@ -353,11 +376,6 @@ namespace TaskMining
                 dic.Add(tasks[i].Name, tasks[i].Dis);
             }
             return dic;
-        }
-
-        public bool ArrayIsEqual(List<IndividualTask> secondList)
-        {
-            return IndividualTasks.Count != secondList.Count ? false : IndividualTasks.SequenceEqual(secondList);
         }
     }
 }

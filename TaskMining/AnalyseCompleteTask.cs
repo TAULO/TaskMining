@@ -172,5 +172,98 @@ namespace TaskMining
             }
             return outDic;
         }
+
+        public static List<string> GetID()
+        {
+            return CompleteTasks
+                .Select(data => data.CompleteTaskID)
+                .ToList();
+        }
+
+        public static List<string> GetAllNames()
+        {
+            return CompleteTasks
+                .Select(data => data.CompleteTaskName)
+                .ToList();
+        }
+
+        public static Dictionary<string, int> GetTotalTasks()
+        {
+            var dic = new Dictionary<string, int>();
+
+            var tasks = CompleteTasks
+                .Select(data => new { data.CompleteTaskName, data.TotalIndividualTasks })
+                .ToList();
+
+            foreach (var task in tasks)
+            {
+                dic.Add(task.CompleteTaskName, task.TotalIndividualTasks);
+            }
+            return dic;
+        }
+
+        public static CompleteTask GetTask(string name)
+        {
+            var task = CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskName.ToLower().Equals(name.ToLower()))
+                .FirstOrDefault();
+
+            return task ?? throw new Exception($"{name} not found Exception");
+        }
+
+        public static CompleteTask GetTaskByID(string id)
+        {
+            var task = CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskID.ToLower().Equals(id.ToLower()))
+                .FirstOrDefault();
+
+            return task ?? throw new Exception($"No task corresponds with {id} exception");
+        }
+
+        public static int GetTaskDataFreq(string name, string data)
+        {
+            var task = CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskName.ToLower().Equals(name.ToLower()))
+                .FirstOrDefault();
+
+            return task != null ? task.IndividualTaskFrequency(data) :
+                throw new Exception($"No task corresponds with {name} exception");
+        }
+
+        public static int GetTaskUserInteractionFreq(string name, string ui)
+        {
+            var task = CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskName.ToLower().Equals(name.ToLower()))
+                .FirstOrDefault();
+
+            return task != null ? task.IndividualUserInteractionsFrequency(ui) :
+                throw new Exception($"No task corresponds with {name} exception");
+        }
+
+        public static int GetTaskDataFreqByID(string id, string data)
+        {
+            var task = CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskID.ToLower().Equals(id.ToLower()))
+                .FirstOrDefault();
+
+            return task != null ? task.IndividualTaskFrequency(data) :
+                throw new Exception($"No task corresponds with {id} exception");
+        }
+
+        public static int GetTaskUserInteractionFreqByID(string id, string ui)
+        {
+            var task = CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskID.ToLower().Equals(id.ToLower()))
+                .FirstOrDefault();
+
+            return task != null ? task.IndividualUserInteractionsFrequency(ui) :
+                throw new Exception($"No task corresponds with {id} exception");
+        }
     }
 }   

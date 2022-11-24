@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskMining", "TaskMining\Ta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskMiningTest", "TaskMiningTest\TaskMiningTest.csproj", "{FFE657F5-C0EA-4093-8C30-6BCA05D418D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskMiningAPI", "TaskMiningAPI\TaskMiningAPI.csproj", "{D1FFF278-0C93-4D51-B489-F9BF766C3E4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskMiningAPI", "TaskMiningAPI\TaskMiningAPI.csproj", "{D1FFF278-0C93-4D51-B489-F9BF766C3E4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

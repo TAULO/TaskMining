@@ -79,6 +79,13 @@ namespace TaskMining
 
             //Console.WriteLine(task1.TotalCompleteTaskApplicationsUsed);
 
+            string path = "C:/Users/Taulo/Desktop/Task Mining source code/TaskMining/TaskMining/TaskMiningUserData/CalcWorkFlow/CalcWorkFlowTestData.txt";
+            var task = new CompleteTask("CompleteTask", path);
+
+            //Console.WriteLine(task.IndividualTasks.Count);
+            //Console.WriteLine(task.CalcIndividualTaskTime().Count);
+
         }
     }
 }
+    

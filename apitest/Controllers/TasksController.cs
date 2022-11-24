@@ -11,7 +11,6 @@ namespace TaskMiningAPI.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
-        [EnableCors("AllowOrigin")]
         [HttpGet]
         public List<CompleteTask> GetAllTasks()
         {
@@ -20,10 +19,24 @@ namespace TaskMiningAPI.Controllers
 
         [EnableCors("AllowOrigin")]
         [HttpGet]
+        [Route("order")]
+        public List<CompleteTask> GetAllTaskOrderAscTaskName()
+        {
+            return AnalyseCompleteTask
+                .CompleteTasks
+                .OrderBy(data => data.CompleteTaskName)
+                .ToList();
+        }
+
+        [EnableCors("AllowOrigin")]
+        [HttpGet]
         [Route("id")]
         public List<string> GetID()
         {
-            return AnalyseCompleteTask.GetID();
+            return AnalyseCompleteTask
+                .CompleteTasks
+                .Select(data => data.CompleteTaskID)
+                .ToList();
         }
 
         [EnableCors("AllowOrigin")]
@@ -31,7 +44,10 @@ namespace TaskMiningAPI.Controllers
         [Route("names")]
         public List<string> GetAllNames()
         {
-            return AnalyseCompleteTask.GetAllNames();
+            return AnalyseCompleteTask
+                .CompleteTasks
+                .Select(data => data.CompleteTaskName)
+                .ToList();
         }
 
         [EnableCors("AllowOrigin")]
@@ -39,7 +55,18 @@ namespace TaskMiningAPI.Controllers
         [Route("total-tasks")]
         public Dictionary<string, int> GetTotalTasks()
         {
-            return AnalyseCompleteTask.GetTotalTasks();
+            var dic = new Dictionary<string, int>();
+
+            var tasks = AnalyseCompleteTask
+                .CompleteTasks
+                .Select(data => new { data.CompleteTaskName, data.TotalIndividualTasks })
+                .ToList();
+
+            foreach(var task in tasks)
+            {
+                dic.Add(task.CompleteTaskName, task.TotalIndividualTasks);
+            }
+            return dic;
         }
 
         [EnableCors("AllowOrigin")]
@@ -47,7 +74,13 @@ namespace TaskMiningAPI.Controllers
         [Route("{name}")]
         public CompleteTask GetTask(string name)
         {
-            return AnalyseCompleteTask.GetTask(name);
+            var task = AnalyseCompleteTask
+                .CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskName.ToLower().Equals(name.ToLower()))
+                .FirstOrDefault();
+
+            return task ?? throw new Exception($"{name} not found exception");
         }
 
         [EnableCors("AllowOrigin")]
@@ -55,7 +88,13 @@ namespace TaskMiningAPI.Controllers
         [Route("id={id}")]
         public CompleteTask GetTaskByID(string id)
         {
-           return AnalyseCompleteTask.GetTaskByID(id);
+            var task = AnalyseCompleteTask
+                .CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskID.ToLower().Equals(id.ToLower()))
+                .FirstOrDefault();
+
+            return task ?? throw new Exception($"No task corresponds with {id} exception");
         }
 
         [EnableCors("AllowOrigin")]
@@ -63,7 +102,14 @@ namespace TaskMiningAPI.Controllers
         [Route("{name}/data={data}")]
         public int GetTaskDataFreq(string name, string data)
         {
-            return AnalyseCompleteTask.GetTaskDataFreq(name, data);
+            var task = AnalyseCompleteTask
+                .CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskName.ToLower().Equals(name.ToLower()))
+                .FirstOrDefault();
+
+            return task != null ? task.IndividualTaskFrequency(data) : 
+                throw new Exception($"No task corresponds with {name} exception");
         }
 
         [EnableCors("AllowOrigin")]
@@ -71,7 +117,14 @@ namespace TaskMiningAPI.Controllers
         [Route("{name}/ui={ui}")]
         public int GetTaskUserInteractionFreq(string name, string ui)
         {
-            return AnalyseCompleteTask.GetTaskUserInteractionFreq(name, ui);
+            var task = AnalyseCompleteTask
+                .CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskName.ToLower().Equals(name.ToLower()))
+                .FirstOrDefault();
+
+            return task != null ? task.IndividualUserInteractionsFrequency(ui) : 
+                throw new Exception($"No task corresponds with {name} exception");
         }
 
         [EnableCors("AllowOrigin")]
@@ -79,7 +132,14 @@ namespace TaskMiningAPI.Controllers
         [Route("id={id}/data={data}")]
         public int GetTaskDataFreqByID(string id, string data)
         {
-            return AnalyseCompleteTask.GetTaskDataFreqByID(id, data);
+            var task = AnalyseCompleteTask
+                .CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskID.ToLower().Equals(id.ToLower()))
+                .FirstOrDefault();
+
+            return task != null ? task.IndividualTaskFrequency(data) : 
+                throw new Exception($"No task corresponds with {id} exception");
         }
 
         [EnableCors("AllowOrigin")]
@@ -87,7 +147,14 @@ namespace TaskMiningAPI.Controllers
         [Route("id={id}/ui={ui}")]
         public int GetTaskUserInteractionFreqByID(string id, string ui)
         {
-            return AnalyseCompleteTask.GetTaskUserInteractionFreqByID(id , ui);
+            var task = AnalyseCompleteTask
+                .CompleteTasks
+                .Select(task => task)
+                .Where(task => task.CompleteTaskID.ToLower().Equals(id.ToLower()))
+                .FirstOrDefault();
+
+            return task != null ? task.IndividualUserInteractionsFrequency(ui) : 
+                throw new Exception($"No task corresponds with {id} exception");
         }
 
         // /tasks
@@ -111,7 +178,7 @@ namespace TaskMiningAPI.Controllers
                     // guard check: duplicate name & duplicate id
                     for (int i = 0; i < completeTasks.Count; i++)
                     {
-                        if (jID.ToString().Contains(completeTasks[i].CompleteTaskID))
+                        if (jID.ToString().Contains(completeTasks[i].CompleteTaskID)) 
                         {
                             // handle duplicate ID
                         }
@@ -126,8 +193,7 @@ namespace TaskMiningAPI.Controllers
 
                     completeTasks.Add(new CompleteTask(jID.ToString(), jName.ToString(), contents.ReadAsStream()));
                 }
-            }
-            else
+            } else
             {
                 Debug.WriteLine("HTTP Error: " + Response.StatusCode);
             }
@@ -140,7 +206,7 @@ namespace TaskMiningAPI.Controllers
         {
             // save old tasks
             var oldTasks = new List<CompleteTask>();
-            foreach (var item in AnalyseCompleteTask.CompleteTasks) oldTasks.Add(item);
+            foreach(var item in AnalyseCompleteTask.CompleteTasks) oldTasks.Add(item); 
 
             // reset tasks
             AnalyseCompleteTask.CompleteTasks = new List<CompleteTask>();

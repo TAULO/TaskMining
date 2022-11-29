@@ -57,6 +57,12 @@ namespace TaskMining
         [JsonPropertyName("individualTaskUserCount")]
         public Dictionary<string, int> IndividualCountTaskPrUser { get; }
 
+        [JsonPropertyName("individualTaskUserInteractionsCount")]
+        public Dictionary<string, int> IndividualTaskUserInteractionsCount { get; }
+        
+    
+        //public Dictionary<string, int> IndividualTaskDataCount { get; }
+
         public readonly List<IndividualTask> IndividualTasks = new List<IndividualTask>();
         public CompleteTask(string completeTaskName, Stream dataStream)
         {
@@ -75,6 +81,8 @@ namespace TaskMining
             TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(double.Parse(IndividualTasks[0].TimeStamp), double.Parse(IndividualTasks[^1].TimeStamp));
             TotalTasksCompletionTime = TotalTaskCompletionTime(IndividualTasks[0], IndividualTasks[^1]);
             IndividualCountTaskPrUser = CalcIndividualCountTaskPrUser();
+            IndividualTaskUserInteractionsCount = CalcIndividualTaskUserInteractionsCount();
+            //IndividualTaskDataCount = CalcIndividualTaskDataCount();
         }
 
         public CompleteTask(string id, string completeTaskName, Stream dataStream)
@@ -94,6 +102,8 @@ namespace TaskMining
             TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(double.Parse(IndividualTasks[0].TimeStamp), double.Parse(IndividualTasks[^1].TimeStamp));
             TotalTasksCompletionTime = TotalTaskCompletionTime(IndividualTasks[0], IndividualTasks[^1]);
             IndividualCountTaskPrUser = CalcIndividualCountTaskPrUser();
+            IndividualTaskUserInteractionsCount = CalcIndividualTaskUserInteractionsCount();
+            //IndividualTaskDataCount = CalcIndividualTaskDataCount();
         }
 
         // for testing
@@ -114,6 +124,8 @@ namespace TaskMining
             TotalTasksCompletionTimeInSeconds = TotalTaskCompletionTimeInSeconds(double.Parse(IndividualTasks[0].TimeStamp), double.Parse(IndividualTasks[^1].TimeStamp));
             TotalTasksCompletionTime = TotalTaskCompletionTime(IndividualTasks[0], IndividualTasks[^1]);
             IndividualCountTaskPrUser = CalcIndividualCountTaskPrUser();
+            IndividualTaskUserInteractionsCount = CalcIndividualTaskUserInteractionsCount();
+            //IndividualTaskDataCount = CalcIndividualTaskDataCount();
         }
         public void HandleCSV(Stream data)
         {
@@ -291,7 +303,6 @@ namespace TaskMining
                 .Select(task => task.Data.UserInteractions.ToString())
                 .ToList();
         }
-
         private Dictionary<string, double> CalcTimeSpentPrApplication()
         {
             var dic = new Dictionary<string, double>();
@@ -375,6 +386,39 @@ namespace TaskMining
             {
                 dic.Add(tasks[i].Name, tasks[i].Dis);
             }
+            return dic;
+        }
+
+        private Dictionary<string, int> CalcIndividualTaskUserInteractionsCount()
+        {
+            var dic = new Dictionary<string, int>();
+
+            var task = IndividualTasks
+                .GroupBy(task => task.Data.UserInteractions)
+                .Select(task => new { Ui = task.Key, UiCount = task.Distinct().Count() })
+                .ToList();
+
+            foreach (var tsk in task)
+            {
+                dic.Add(tsk.Ui.ToString(), tsk.UiCount);
+            }
+
+            return dic;
+        }
+        private Dictionary<string, int> CalcIndividualTaskDataCount()
+        {
+            var dic = new Dictionary<string, int>();
+
+            var task = IndividualTasks
+                .GroupBy(task => task.Data.Data)
+                .Select(task => new { Data = task.Key, DataCount = task.Distinct().Count() })
+                .ToList();
+
+            foreach (var tsk in task)
+            {
+                dic.Add(tsk.Data, tsk.DataCount);
+            }
+
             return dic;
         }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TaskMining
 {
-    public class AnalyseCompleteTask
+    public static class AnalyseCompleteTask
     {
 
         //public static List<CompleteTask> CompleteTasks { get => new List<CompleteTask>(); }
@@ -130,10 +130,12 @@ namespace TaskMining
         public static double CompleteTaskAverageCompletionTime()
         {
             double result = 0;
+            // find all tasks completion time and add to result
             foreach (var task in CompleteTasks)
             {
                 result += task.TotalTasksCompletionTimeInSeconds;
             }
+            // divide the result with the amount of complete tasks
             return result / CompleteTasks.Count;
         }
 
@@ -171,6 +173,81 @@ namespace TaskMining
                 outDic.Add(task.CompleteTaskName, innerDic);
             }
             return outDic;
+        }
+
+        public static int CalcTotalAmountOfUniqueUsers()
+        {
+            var allUserNames = new List<string>();
+
+            // find all names and add to list 
+            foreach(var tasks in CompleteTasks)
+            {
+                foreach(var names in tasks.IndividualTasks)
+                {
+                    allUserNames.Add(names.UserName);
+                }
+            }
+
+            // find only unique names in list
+            return allUserNames.Distinct().Count();
+        }
+
+        public static int CalcTotalAmountOfUI()
+        {
+            var allUI = new List<UserInteractions>();
+
+            // find all ui and add to list 
+            foreach (var tasks in CompleteTasks)
+            {
+                foreach (var ui in tasks.IndividualTasks)
+                {
+                    if (ui.Data.UserInteractions != UserInteractions.MANATEE)
+                    {
+                        allUI.Add(ui.Data.UserInteractions);
+                    }
+                }
+            }
+
+            // return arr count
+            return allUI.Count;
+        }
+        
+        public static int CalcTotalAmountOfSteps()
+        {
+            var allSteps = new List<string>();
+
+            // find all individual tasks steps and add to list 
+            foreach (var tasks in CompleteTasks)
+            {
+                foreach (var steps in tasks.IndividualTasks)
+                {
+                    allSteps.Add(steps.Data.Data);
+                }
+            }
+
+            // return arr count
+            return allSteps.Count;
+        } 
+        
+        public static int CalcTotalAmountOfApps()
+        {
+            var allApps = new List<UserInteractions>();
+
+            // find all apps that have been opened and add to list 
+            foreach (var tasks in CompleteTasks)
+            {
+                foreach (var apps in tasks.IndividualTasks)
+                {
+                    if (apps.Data.UserInteractions.Equals(UserInteractions.WINDOW_OPEN))
+                    {
+                        Console.WriteLine(apps.Data.UserInteractions);
+                        allApps.Add(apps.Data.UserInteractions);
+                    }
+                }
+            }
+
+            // return arr count
+            return allApps.Count();
         }
 
         public static List<string> GetID()

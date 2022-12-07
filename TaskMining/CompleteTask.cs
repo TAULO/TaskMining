@@ -131,7 +131,7 @@ namespace TaskMining
         {
             try
             {
-               //make check if path is .csv
+               //TODO: make check if path is .csv
                 var csvParser = new TextFieldParser(data);
 
                 csvParser.SetDelimiters(new string[] { "," });

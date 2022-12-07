@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TaskMining
 {
-    public class IndividualTaskData
+    public class IndividualTaskData : IIndividualTaskData
     {
         public string Data { get; }
         public UserInteractions UserInteractions { get; }

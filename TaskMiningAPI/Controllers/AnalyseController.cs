@@ -56,6 +56,38 @@ namespace TaskMiningAPI.Controllers
         {
             return AnalyseCompleteTask.CompleteTaskAverageCompletionTime();
         }
+        
+        [EnableCors("AllowOrigin")]
+        [HttpGet]
+        [Route("users")]
+        public int GetTotalAmountOfUniqueUsers()
+        {
+            return AnalyseCompleteTask.CalcTotalAmountOfUniqueUsers();
+        }
+        
+        [EnableCors("AllowOrigin")]
+        [HttpGet]
+        [Route("totalui")]
+        public int GetTotalAmountOfUI()
+        {
+            return AnalyseCompleteTask.CalcTotalAmountOfUI();
+        }
+        
+        [EnableCors("AllowOrigin")]
+        [HttpGet]
+        [Route("totalsteps")]
+        public int GetTotalAmountOfSteps()
+        {
+            return AnalyseCompleteTask.CalcTotalAmountOfSteps();
+        }
+        
+        [EnableCors("AllowOrigin")]
+        [HttpGet]
+        [Route("apps")]
+        public int GetTotalAmountOfApps()
+        {
+            return AnalyseCompleteTask.CalcTotalAmountOfApps();
+        }
 
         [EnableCors("AllowOrigin")]
         [HttpGet]

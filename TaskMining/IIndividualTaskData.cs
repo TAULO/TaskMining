@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace TaskMining
 {
-    public interface IHandleCSVData
+    internal interface IIndividualTaskData
     {
-        void HandleCSV(string path);
+        public string Data { get; }
+        public UserInteractions UserInteractions { get; }
     }
 }

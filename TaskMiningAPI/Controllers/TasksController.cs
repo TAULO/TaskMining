@@ -132,6 +132,7 @@ namespace TaskMiningAPI.Controllers
                 Debug.WriteLine("HTTP Error: " + Response.StatusCode);
             }
         }
+       
 
         [EnableCors("AllowOrigin")]
         [HttpGet]

@@ -43,7 +43,7 @@ namespace TaskMiningAPI.Controllers
 
         [EnableCors("AllowOrigin")]
         [HttpGet]
-        [Route("completionTime")]
+        [Route("completion-time")]
         public Dictionary<string, double> GetCompletionTime()
         {
             return AnalyseCompleteTask.CompletionTimePrCompleteTask();
@@ -67,7 +67,7 @@ namespace TaskMiningAPI.Controllers
         
         [EnableCors("AllowOrigin")]
         [HttpGet]
-        [Route("totalui")]
+        [Route("total-ui")]
         public int GetTotalAmountOfUI()
         {
             return AnalyseCompleteTask.CalcTotalAmountOfUI();
@@ -75,7 +75,7 @@ namespace TaskMiningAPI.Controllers
         
         [EnableCors("AllowOrigin")]
         [HttpGet]
-        [Route("totalsteps")]
+        [Route("total-steps")]
         public int GetTotalAmountOfSteps()
         {
             return AnalyseCompleteTask.CalcTotalAmountOfSteps();
@@ -95,6 +95,14 @@ namespace TaskMiningAPI.Controllers
         public int GetTotalCompleteTask()
         {
             return AnalyseCompleteTask.TotalCompleteTasks;
+        }
+
+        [EnableCors("AllowOrigin")]
+        [HttpGet]
+        [Route("repeatable-ui={task}")]
+        public List<string> GetRepeatableUserInteractions(CompleteTask task)
+        {
+            return AnalyseCompleteTask.RepeatableUserInteracions(task);
         }
     }
 }

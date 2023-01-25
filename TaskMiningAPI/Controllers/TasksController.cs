@@ -97,34 +97,44 @@ namespace TaskMiningAPI.Controllers
         {
             if (Response.StatusCode == 200)
             {
-                var completeTasks = AnalyseCompleteTask.CompleteTasks;
-                var reader = new StreamReader(Request.Body);
-                var data = await reader.ReadToEndAsync();
-
-                JArray array = JArray.Parse(data);
-                foreach (JObject obj in array.Children<JObject>())
+                try
                 {
-                    var jID = obj["id"];
-                    var jName = obj["name"];
-                    var jData = obj["data"];
+                    var completeTasks = AnalyseCompleteTask.CompleteTasks;
+                    // read the contents of the incomming request body asynchronous
+                    var reader = new StreamReader(Request.Body);
+                    var data = await reader.ReadToEndAsync();
 
-                    // guard check: duplicate name & duplicate id
-                    for (int i = 0; i < completeTasks.Count; i++)
+                    // run through every children in the JSON array 
+                    JArray array = JArray.Parse(data);
+                    foreach (JObject obj in array.Children<JObject>())
                     {
-                        if (jID.ToString().Contains(completeTasks[i].CompleteTaskID))
+                        // store the JSON properties in a variable 
+                        var jID = obj["id"];
+                        var jName = obj["name"];
+                        var jData = obj["data"];
+
+                        // guard check: duplicate name & duplicate id
+                        for (int i = 0; i < completeTasks.Count; i++)
                         {
-                            // handle duplicate ID
+                            if (jID.ToString().Contains(completeTasks[i].CompleteTaskID))
+                            {
+                                // TODO: handle duplicate ID
+                            }
+                            if (jName.ToString().Contains(completeTasks[i].CompleteTaskName))
+                            {
+                                // TODO: handle duplicate names
+                            }
                         }
-                        if (jName.ToString().Contains(completeTasks[i].CompleteTaskName))
-                        {
-                            // handle duplicate names
-                        }
+
+                        // convert the incomming data to a stream array, which will be handle in HandleCSV method
+                        var bytes = Convert.FromBase64String(jData.ToString().Split(",")[1]);
+                        var contents = new StreamContent(new MemoryStream(bytes));
+
+                        completeTasks.Add(new CompleteTask(jID.ToString(), jName.ToString(), contents.ReadAsStream()));
                     }
-
-                    var bytes = Convert.FromBase64String(jData.ToString().Split(",")[1]);
-                    var contents = new StreamContent(new MemoryStream(bytes));
-
-                    completeTasks.Add(new CompleteTask(jID.ToString(), jName.ToString(), contents.ReadAsStream()));
+                } catch(Exception ex)
+                {
+                    Debug.WriteLine(ex);
                 }
             }
             else
@@ -132,7 +142,6 @@ namespace TaskMiningAPI.Controllers
                 Debug.WriteLine("HTTP Error: " + Response.StatusCode);
             }
         }
-       
 
         [EnableCors("AllowOrigin")]
         [HttpGet]

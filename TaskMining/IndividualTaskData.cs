@@ -49,6 +49,8 @@ namespace TaskMining
         {
             return Data.Equals(data.Data) && UserInteractions.Equals(data.UserInteractions);
         }
-        public string ToString(string appName) { return Data.Replace("{applicationName}", appName) + "\n\t|" + "\n\t|" + "\n\tv"; }
+
+        override
+        public string ToString() { return Data + " " + UserInteractions; }
     }   
 }

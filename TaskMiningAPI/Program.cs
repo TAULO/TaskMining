@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// allow any origin (set @AllowOrigin flag at each endpoint)
 app.UseCors(builder => builder
                 .AllowAnyOrigin());
 

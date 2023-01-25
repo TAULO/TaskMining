@@ -12,51 +12,97 @@ namespace TaskMining
 {
     public class CompleteTask 
     {
+        /// <summary>
+        /// The ID of the completed task.
+        /// </summary>
         [JsonPropertyName("ID")]
         public string CompleteTaskID { get; }
 
+        /// <summary>
+        /// The name of the completed task.
+        /// </summary>
         [JsonPropertyName("name")]
         public string CompleteTaskName { get; set; }
 
+        /// <summary>
+        /// The total amount of users at who have been involved in the task.
+        /// </summary>
         [JsonPropertyName("userAmount")]
         public int TotalAmountOfUsers { get; }
 
+        /// <summary>
+        /// The username of user. (the user who started the task).
+        /// </summary>
         [JsonPropertyName("userName")]
         public string IndividualTasksUserName { get => IndividualTasks[0].UserName; }
 
+        /// <summary>
+        /// The machine name.
+        /// </summary>
         [JsonPropertyName("machineName")]
         public string IndividualTasksMachineName { get => IndividualTasks[0].MachineName; }
 
+        /// <summary>
+        /// The total amount of applications used in the task.
+        /// </summary>
         [JsonPropertyName("applicationsUsed")]
         public int TotalCompleteTaskApplicationsUsed { get; }
         
+        /// <summary>
+        /// The total number of seconds spent pr appliation. 
+        /// </summary>
         [JsonPropertyName("timeSpentPrApplication")]
         public Dictionary<string, double> TimeSpentPrApplication { get; }
 
+        /// <summary>
+        /// The total number of seconds spent at each individual task. 
+        /// </summary>
         [JsonPropertyName("individualTaskTime")]
         public List<double> IndividualTaskTime { get; }
 
+        /// <summary>
+        /// Total amount of individual tasks. 
+        /// </summary>
         [JsonPropertyName("tasksCount")]
         public int TotalIndividualTasks { get; }
-        
+
+        /// <summary>
+        /// The total amount of user interactions. 
+        /// </summary>
         [JsonPropertyName("userInteractionsCount")]
         public int TotalAmountOfUserInteractionActions { get; }
         
+        /// <summary>
+        /// A list of every individual task. 
+        /// </summary>
         [JsonPropertyName("tasks")]
         public List<string> IndividualTaskDataList { get; }
        
+        /// <summary>
+        /// A list of every user interaction
+        /// </summary>
         [JsonPropertyName("userInteractions")]
         public List<string> IndividualTaskUserInteractionsList { get; }
         
+        // TODO: Fix
         [JsonPropertyName("taskCompletionTime")]
         public DateTime TotalTasksCompletionTime { get; }
-        
+
+        /// <summary>
+        /// The number of seconds the completed task has taken to complete
+        /// </summary>
         [JsonPropertyName("taskCompletionTimeSeconds")]
         public double TotalTasksCompletionTimeInSeconds { get; }
 
+        /// <summary>
+        /// The total amount of individual task one or multiple users has done.
+        /// </summary>
         [JsonPropertyName("individualTaskUserCount")]
         public Dictionary<string, int> IndividualCountTaskPrUser { get; }
 
+        /// <summary>
+        /// The total amount of user interactions one or multiple users has done.
+        /// </summary>
         [JsonPropertyName("individualTaskUserInteractionsCount")]
         public Dictionary<string, int> IndividualTaskUserInteractionsCount { get; }
         
@@ -106,7 +152,6 @@ namespace TaskMining
             //IndividualTaskDataCount = CalcIndividualTaskDataCount();
         }
 
-        // for testing
         public CompleteTask(string completeTaskName, string csvPath)
         {
             HandleCSV(csvPath);
@@ -127,19 +172,26 @@ namespace TaskMining
             IndividualTaskUserInteractionsCount = CalcIndividualTaskUserInteractionsCount();
             //IndividualTaskDataCount = CalcIndividualTaskDataCount();
         }
+
+        /// <summary>
+        /// Adds the CSV data to IndividualTask class
+        /// </summary>
+        /// <param name="data"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public void HandleCSV(Stream data)
         {
             try
             {
-               //TODO: make check if path is .csv
                 var csvParser = new TextFieldParser(data);
 
+                // set specied value of ","
                 csvParser.SetDelimiters(new string[] { "," });
                 csvParser.HasFieldsEnclosedInQuotes = true;
 
                 // skip header line
                 csvParser.ReadLine();
 
+                // read every line in CSV file
                 while (!csvParser.EndOfData)
                 {
                     string[]? fields = csvParser.ReadFields();
@@ -155,8 +207,8 @@ namespace TaskMining
                         string userName = fields[2];
                         string applicationName = fields[3];
                         IndividualTaskData indData = new IndividualTaskData(fields[4], IndividualTaskData.GetUserInteractions(fields[5]));
-
                         IndividualTasks.Add(new IndividualTask(timeStamp, machineName, userName, applicationName, indData));
+
                     }
                 }
                 csvParser.Close();
@@ -164,15 +216,14 @@ namespace TaskMining
             catch (FileNotFoundException ex)
             {
                 Console.WriteLine(ex.Message);
+
             }
         }
 
-        // for testing
         public void HandleCSV(string data)
         {
             try
             {
-                //make check if path is .csv
                 var csvParser = new TextFieldParser(data);
 
                 csvParser.SetDelimiters(new string[] { "," });
@@ -181,6 +232,7 @@ namespace TaskMining
                 // skip header line
                 csvParser.ReadLine();
 
+                // read every line in CSV-file
                 while (!csvParser.EndOfData)
                 {
                     string[]? fields = csvParser.ReadFields();
@@ -243,6 +295,8 @@ namespace TaskMining
             var list = new List<double>();
             for (int i = 0; i < IndividualTasks.Count; i++)
             {
+                // if i equals the length of the array, then add 0 to list, because the individual task 
+                // completion time cannot be calulated without a second task. 
                 if (i == IndividualTasks.Count - 1)
                 {
                     list.Add(0);
@@ -303,6 +357,8 @@ namespace TaskMining
                 .Select(task => task.Data.UserInteractions.ToString())
                 .ToList();
         }
+
+        // returns a dictionary that maps the application names to the total time spent using each application
         private Dictionary<string, double> CalcTimeSpentPrApplication()
         {
             var dic = new Dictionary<string, double>();
@@ -322,13 +378,17 @@ namespace TaskMining
                 .Where(ui => ui.UserInteractions.Equals(UserInteractions.WINDOW_UNFOCUS))
                 .Select(task => new { task.ApplicationName, tsEnd = task.TimeStamp })
                 .ToList();
-
+            
+            // for each element in the list, calculate the time spent using each application
+            // by subtracting the start time from the end time
             for(int i = 0; i < taskStart.Count; i++)
             {
                 double tsStart = double.Parse(taskStart[i].tsStart);
                 double tsEnd = double.Parse(taskEnd[i].tsEnd);
                 double res = tsEnd - tsStart;
 
+                // if application name is not already a key 
+                // updates the existing value by adding the time spent using the application.
                 if (!dic.ContainsKey(taskStart[i].ApplicationName))
                 {
                     dic.Add(taskStart[i].ApplicationName, res);
@@ -340,6 +400,7 @@ namespace TaskMining
             return dic;
         }
 
+        // returns the number of IndividualTasks that have a User Interactions of WINDOW OPEN or return 0
         private int CalcTotalCompleteTaskApplicationsUsed()
         {
             var tasks = IndividualTasks
@@ -351,6 +412,7 @@ namespace TaskMining
             return tasks != null ? tasks.Counter : 0; 
         }
 
+        // returns the number of user interactions that does not have user interactions of MANATEE or return 0
         private int CalcTotalAmountOfUserInteractionActions()
         {
             int result = 0;
@@ -364,6 +426,7 @@ namespace TaskMining
             return result;
         }
 
+        // return the amount of users if none return 0
         private int CalcTotalAmountOfUsers()
         {
             return IndividualTasks
@@ -373,6 +436,7 @@ namespace TaskMining
                 .Length;
         }
 
+        // return a dictionary that maps user names to the total number of individual tasks performed by each user
         private Dictionary<string, int> CalcIndividualCountTaskPrUser()
         {
             var dic = new Dictionary<string, int>();
@@ -389,6 +453,7 @@ namespace TaskMining
             return dic;
         }
 
+        // return a dictionary that maps User Interaction to the total number of User interaction performed by each User Interaction
         private Dictionary<string, int> CalcIndividualTaskUserInteractionsCount()
         {
             var dic = new Dictionary<string, int>();
